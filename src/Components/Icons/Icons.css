@@ -1,0 +1,341 @@
+.entity {
+    position: fixed;
+    /* color: rgb(0, 0, 0); */
+    color: rgb(255, 255, 255);
+    z-index: 155;
+    background-color: rgba(0, 0, 0, 0.61);
+    
+    text-align: center;
+    margin: 0px;
+    transition: opacity 0.2s;
+    opacity: 0.5;
+    -webkit-transition: all 1s ease-in-out;
+	-moz-transition: all 1s ease-in-out;
+	-o-transition: all 1s ease-in-out;
+	-ms-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+
+}
+
+.entityDis {
+    position: fixed;
+    /* color: rgb(0, 0, 0); */
+    color: rgb(255, 255, 255);
+    z-index: 155;
+    background-color: rgba(0, 0, 0, 0.61);
+    pointer-events: none;
+    text-align: center;
+    margin: 0px;
+    transition: opacity 0.2s;
+    opacity: 0.3;
+    filter: blur(2px);
+    -webkit-transition: all 1s ease-in-out;
+	-moz-transition: all 1s ease-in-out;
+	-o-transition: all 1s ease-in-out;
+	-ms-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+}
+
+.newEntity {
+    position: fixed;
+    /* color: rgb(0, 0, 0); */
+    color: rgb(255, 255, 255);
+    z-index: 155;
+    background-color: rgba(0, 0, 0, 0.61);
+    
+    text-align: center;
+    margin: 0px;
+    transition: opacity 0.2s;
+   opacity: 0.9;
+    -webkit-transition: all 1s ease-in-out;
+	-moz-transition: all 1s ease-in-out;
+	-o-transition: all 1s ease-in-out;
+	-ms-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+
+}
+
+
+
+.entity1 {
+
+    /* color: rgb(0, 0, 0); */
+    color: rgb(255, 255, 255);
+    z-index: 155;
+    background-color: rgba(43, 43, 43, 0.61);
+    opacity: 0.4;
+    width: 80%;
+    transition: opacity 0.2s;
+    box-shadow: 0px 0px 3px 1px rgb(255, 255, 255);
+    margin: 10px;
+}
+
+.entity:hover {
+    color: rgb(255, 255, 255);
+    z-index: 160;
+    box-shadow: 0px 0px 3px 2px rgb(255, 255, 255);
+}
+
+.newEntity:hover {
+    color: rgb(255, 255, 255);
+    z-index: 160;
+    box-shadow: 0px 0px 3px 2px rgb(255, 255, 255);
+}
+
+
+
+.folder1 {
+
+    /* color: rgb(0, 0, 0); */
+    color: rgb(255, 255, 255);
+    z-index: 150;
+    background-color: rgba(0, 0, 0, 0.836);
+    opacity: 0.4;
+    margin: 0px;
+    transition: opacity 0.2s;
+    box-shadow: 0px 0px 3px 1px rgb(255, 255, 255);
+    height: 80px;
+    width: 80px;
+    cursor: default;
+}
+
+ .folder:hover {
+    color: rgb(255, 255, 255);
+    z-index: 159;
+    box-shadow: 0px 0px 3px 2px rgb(255, 255, 255);
+} 
+
+.folderImage {
+    display: inline-block;    
+}
+
+
+.folderLabel {
+    position: absolute;
+    color: rgba(197, 197, 197, 0.945);
+    font-family: 'Mandali', sans-serif;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 12px;
+    top: 108%;
+    left: 0%;
+    width: 65px;
+    word-wrap: break-word;
+ 
+    text-align: center;
+
+}
+
+.entity:hover .addEntity  {
+    display: block;
+}
+
+.newEntity:hover .addingEntity  {
+    display: block;
+}
+
+.entity:hover .addingEntity  {
+    display: block;
+}
+
+.entity:hover .moveEntity  {
+    display: block;
+}
+
+.entity:hover .removeEntity  {
+    display: block;
+}
+
+.entity:hover .disableEntity  {
+    display: block;
+}
+
+.newEntity:hover .addEntity  {
+    display: block;
+}
+
+.newEntity:hover .moveEntity  {
+    display: block;
+}
+
+.newEntity:hover .removeEntity  {
+    display: block;
+}
+
+.newEntity:hover .disableEntity  {
+    display: block;
+}
+
+.folder:hover .disableEntity  {
+    display: block;
+}
+
+.entityImg {
+    position: fixed;
+    color: rgba(255, 255, 255, 0.897);
+    text-shadow: -1px 2px 5px rgba(0, 0, 0, 0.74);
+    z-index: 100;
+    opacity: 0.4;
+}
+
+.forSure {
+    margin-left: 50px;
+    margin-top: 5px;
+    cursor: pointer;
+    opacity: 0,3;
+    font-size: 17px;
+    padding: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+    white-space: nowrap;
+    position: absolute;
+    top: -19px;
+    left: 86%;
+}
+
+
+
+.entityClick {
+    text-shadow: 0px 0px 5px rgb(231, 173, 64);
+}
+
+.addEntity {
+    position: absolute;
+    top: -19px;
+    left: 86%;
+    color: rgb(86, 159, 255);
+    font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
+    display: none;
+    text-shadow: -9px 13px 15px -1px #000000;
+    font-size: 25px;
+    text-shadow: rgba(0, 0, 0, 0.979) 0px 0px 1px, rgba(0, 0, 0, 0.911) 0px 0px 5px
+}
+
+.addingEntity {
+    position: absolute;
+    top: -19px;
+    left: 86%;
+    color: rgb(86, 159, 255);
+    font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
+    display: none;
+    text-shadow: -9px 13px 15px -1px #000000;
+    font-size: 25px;
+    text-shadow: rgba(0, 0, 0, 0.979) 0px 0px 1px, rgba(0, 0, 0, 0.911) 0px 0px 5px
+}
+
+.moveEntity {
+    position: absolute;
+    top: -15px;
+    left: -32%;
+    color: rgb(86, 159, 255);
+    font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
+    display: none;
+    text-shadow: -9px 13px 15px -1px #000000;
+    font-size: 18px;
+    text-shadow: rgba(0, 0, 0, 0.979) 0px 0px 1px, rgba(0, 0, 0, 0.911) 0px 0px 5px
+    
+}
+
+.addEntity:hover {
+    font-weight: 900;
+    display: block;
+    color: rgba(0, 110, 255, 0.979);
+    text-shadow: rgba(29, 29, 29, 0.979) -3px 2px 3px, rgba(0, 0, 0, 0.911) 0px 0px 15px
+}
+
+.addingEntity:hover {
+    font-weight: 900;
+    display: block;
+    color: rgba(0, 110, 255, 0.979);
+    text-shadow: rgba(29, 29, 29, 0.979) -3px 2px 3px, rgba(0, 0, 0, 0.911) 0px 0px 15px
+}
+
+
+.moveEntity:hover {
+   
+    font-weight: 900;
+    display: block;
+    color: rgba(0, 110, 255, 0.979);
+    text-shadow: rgba(29, 29, 29, 0.979) -3px 2px 3px, rgba(0, 0, 0, 0.911) 0px 0px 15px
+ 
+}
+
+.removeEntity {
+    position: absolute;
+    top: -19px;
+    left: 86%;
+    color: rgba(255, 60, 60, 0.945);
+   
+    font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
+    display: none;
+    text-shadow: -9px 13px 15px -1px #000000;
+    font-size: 25px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+.removeEntity:hover {
+   
+    font-weight: 900;
+    display: block;
+    color: rgba(255, 0, 0, 0.979);
+    
+    text-shadow: rgba(29, 29, 29, 0.979) -3px 2px 1px, rgba(0, 0, 0, 0.911) 0px 0px 5px
+ 
+}
+
+.disable {
+    display: none;
+}
+
+.disableEntity {
+    position: absolute;
+    top: -19px;
+    left: 86%;
+    color: rgba(255, 60, 60, 0.945);
+   
+    font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
+    display: none;
+    text-shadow: -9px 13px 15px -1px #000000;
+    font-size: 25px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+
+.disableEntity:hover {
+   
+    font-weight: 900;
+    display: block;
+    color: rgba(255, 0, 0, 0.979);
+    text-shadow: rgba(29, 29, 29, 0.979) -3px 2px 1px, rgba(0, 0, 0, 0.911) 0px 0px 5px
+}
+    
+ 
+
+.entImg {
+    object-fit: cover;
+    width: 60px;
+    height: 50px;
+    border-radius: 6px;
+}
+  
+
+.folderTd {
+  
+    width: 35px;
+    margin: 0;
+
+}
