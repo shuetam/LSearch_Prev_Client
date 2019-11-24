@@ -1149,8 +1149,8 @@ class UserDesktop extends Component {
         <input type="text" placeholder="Wklej link do zdjęć lub filmu YouTube" style={{width: "230px"}} id="iLink"/>
         <button class= { "popupButtton" } style={{fontSize: 12, padding: "4px",  width: '90px', marginLeft: "10px"}}  
         onClick={this.addIconHandler} >Znajdź ikony</button>
-         <button title="Zakończ" class= { "stopAdding" }
-        onClick={this.stopAdding}><div id="closeAdd">&#43;</div></button>
+         <div title="Zakończ" class= { "stopAdding" }
+        onClick={this.stopAdding}>&#43;</div>
         </div>
      <br/>
             <div style={{display: "flex"}}>
