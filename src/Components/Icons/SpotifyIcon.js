@@ -11,13 +11,13 @@ import {URL} from '../../environment';
 import ReactDOM from 'react-dom';
 import IconEditor from './IconEditor';
 
-class YTIcon extends Component {
+class SpotifyIcon extends Component {
 
 
     constructor(props) {
         super(props);
     this.state = {
-       src: "",
+       src: "https://developer.spotify.com/assets/branding-guidelines/icon4@2x.png",
        authConfig: {
         headers: {Authorization: "Bearer " + this.props.jwtToken}
     },
@@ -27,8 +27,10 @@ class YTIcon extends Component {
 }
 
     componentDidMount() {
-        var src = 'https://i.ytimg.com/vi/' + this.props.id + '/hqdefault.jpg';
-        this.setState({src: src });
+       
+       if(this.props.src !== "") {
+           this.setState({src: this.props.src });
+       }
     }
 
     removeIcon = (data, cross) => {
@@ -45,10 +47,10 @@ class YTIcon extends Component {
     disableIcon = (data, entityToDisable) => {
           axios.post(URL.api+URL.removeIcon, data, this.state.authConfig)
             .then(() => {
-                //entityToDisable.className  = 'disable';
+            
                 this.props.sendToRemove(entityToDisable.id);
 
-                //entityToDisable.id = entityToDisable.id + 'dis';
+             
                 })
             .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się usunąć ikony.")});
     }
@@ -57,13 +59,11 @@ class YTIcon extends Component {
     moveIcon = () => {
 
         var ID = this.props.id;
-        //var cross = event.target;
-        //var entity = document.getElementById(ID);
-        //var name = entity.title
+       
 
             const data = {
                         Id: ID,
-                        Type: "YT",
+                        Type: "SPOTIFY",
                         //UserId: this.props.userId,
                         //Title: name
                         }
@@ -104,6 +104,7 @@ class YTIcon extends Component {
         var Left_ = entity.style.left;
 
 
+      
         if((entity.style.top).includes("px")) {
             var topFlo = (parseFloat(Top_) / document.documentElement.clientHeight) * 100;
             if(topFlo>99) {
@@ -122,20 +123,20 @@ class YTIcon extends Component {
         
             const data = {
                         Id: ID,
-                        Type: "YT",
-                        //UserId: this.props.userId,
+                        Type: "SPOTIFY",
                         Title: name,
+                        Source: this.props.src,
                         Top: Top_,
                         Left: Left_,
                         FolderId: this.props.folderId
                         }
 
     
-         //debugger;    
+   
         if(event.target.className == "addEntity")
         {
             var url = URL.api+URL.addIcon;
-            console.log("DKASHKDJHASKJDSA - " + url);
+         
             axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
             .then((response) => {
                 debugger;
@@ -145,13 +146,14 @@ class YTIcon extends Component {
 
         if(event.target.className == "addingEntity")
         {
-            //debugger;
+            
             const icon = {
                 id: ID,
                 title: "",
+                source: this.props.src,
                 top: entity.style.top,
                 left: entity.style.left,
-                type: "YT"
+                type: "SPOTIFY"
             }
 
             axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
@@ -163,8 +165,7 @@ class YTIcon extends Component {
                 else {
                     this.Alert("Wybrana ikona znajduje się już w Twojej kolekcji.");
                 }
-               //entity.className = 'disable';
-                //cross.className = 'removeEntity'; cross.title = "Usuń z pulpitu";
+       
             })
             .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się dodać ikony.")});
         }
@@ -199,7 +200,8 @@ class YTIcon extends Component {
     }
 
     render() {
-     
+        //var src = 'https://i.ytimg.com/vi/' + this.props.id + '/hqdefault.jpg';
+        
         var classEntity = "";
         var iconTitle = ""
        
@@ -227,8 +229,7 @@ class YTIcon extends Component {
         }
        
         var addIcon = this.props.isAuth?   <div id={this.props.id} onClick = {this.YTHandler}
-        title={iconTitle}  class={classEntity}>&#43;</div> : "";
-
+        title={iconTitle} /* style={{left: "70%", top: "-20%" }} */  class={classEntity}>&#43;</div> : "";
 
             var editIconField = <IconEditor 
             onHover = {this.props.onHover}
@@ -262,7 +263,7 @@ class YTIcon extends Component {
              
                   id={this.props.id}
                   title={this.props.title} 
-                  src={this.state.src} height={this.props.size} style={{ margin: '0px'}} 
+                  src={this.state.src} style={this.props.location} 
                   onError={this.onError}>
                   </img> 
 
@@ -298,4 +299,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-  export default connect( mapStateToProps, mapDispatchToProps )(YTIcon);
+  export default connect( mapStateToProps, mapDispatchToProps )(SpotifyIcon);

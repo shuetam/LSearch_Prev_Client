@@ -39,7 +39,9 @@ class ImageField extends Component {
     render() {
  
         let loading = (<div className="field"><div class="lds-ellipsis"><div></div><div></div><div></div></div></div>);
-
+        let actualization = (<div className="fieldAct">Trwa atualizacja bazy danych.<br/>
+        Proszę spróbować ponownie za chwilę.
+        </div>)
         let bigImage = this.state.showBig? (<div className ="imageFieldZoom" onClick={this.hideBig}>   
          <div id="bigimgSource"  onClick={this.openSourceBig}>{this.props.sourceShow}</div>  
           <img className = "imageFieldZoom" src={this.props.src} >
@@ -75,6 +77,9 @@ class ImageField extends Component {
             </div>
         );
         if(this.props.show) {
+            if(!this.props.fromDesktop && this.props.noIcons) {
+                return actualization;
+            }
             return field;   
         }
         else {

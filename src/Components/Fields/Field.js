@@ -119,6 +119,9 @@ class Field extends Component {
         };
         let loading = (<div className="field"><div class="lds-ellipsis"><div></div><div></div><div></div></div></div>);
 
+        let actualization = (<div className="fieldAct">Trwa atualizacja bazy danych.<br/>
+        Proszę spróbować ponownie za chwilę.
+        </div>)
 
         let field = (
             <div>
@@ -150,10 +153,14 @@ class Field extends Component {
             </div>
         );
         if(this.props.show) {
+
+            if(!this.props.fromDesktop && this.props.noIcons) {
+                return actualization;
+            }
             return field;   
         }
         else {
-            return loading;
+            return "";
         }
     }
 }

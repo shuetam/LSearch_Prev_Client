@@ -4,30 +4,22 @@ import './Area.css';
 import Header from '../Header/Header';
 import Field from '../Fields/Field';
 import { Link, Route, NavLink } from 'react-router-dom';
-import YTIcon from '../Icons/YTIcon';
-import LoadingField from '../Fields/LoadingField';
+import BookIcon from '../Icons/BookIcon';
+import ImageField from '../Fields/ImageField';
 import { BrowserRouter } from 'react-router-dom';
 import randoom from 'random-int';
 import axios from '../../axios-song';
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
-//import {scrollU, scrollD} from '../../Store/Actions/scroll';
 import { connect } from 'react-redux';
 import {showServerPopup, manageScreen} from '../../Store/Actions/auth';
 import {URL} from '../../environment'
 
 
 
-class YTArea extends Component {
+class BestSellers extends Component {
 
     constructor(props) {
         super(props);
-
-        /* fetch(this.props.fetchData )
-        .then(res => res.json()).then((result) => this.setState({songs: result})).then(()=> this.setMaxCount());
-        
- */
-
-
 
         this.state = {
 
@@ -37,8 +29,9 @@ class YTArea extends Component {
             maxCount: null,
             ytCount: null,
             fetchFrom: null,
+            imgSource: "",
             hoveredId: "",
-            ytID: "",
+            iconID: "",
             actuallOpacity: 0.4,
             nowPlayed: "",
             playedShadow: '#FFF 0px 0px 5px, 0px 0px 3px 1px rgb(255, 255, 255), 0px 0px 3px 1px rgb(255, 255, 255), 0px 0px 3px 1px rgb(255, 255, 255), 0px 0px 3px 1px rgb(255, 255, 255), #FFF 0px 0px 5px,#FFF 0px 0px 5px,#FFF 0px 0px 5px,#FFF 0px 0px 5px, #FFF 0px 0px 10px, #FFF 0px 0px 10px, #FFF 0px 0px 10px, #FFF 0px 0px 5px, rgb(255, 45, 45) 0px 0px 15px 10px, rgb(255, 45, 45) 0px 0px 10px, rgb(255, 45, 45) 0px 0px 10px, rgb(255, 45, 45) 0px 0px 20px, rgb(255, 45, 45) 0px 0px 2px 5px',
@@ -57,25 +50,18 @@ class YTArea extends Component {
 
     componentDidMount() {
 
-        if(this.props.fetchData.includes("movie"))
-        {
-            this.setState({iconsType: "movie"})
-        }
-        if(this.props.fetchData.includes("radio"))
-        {
-            this.setState({iconsType: "radio"})
-        }
-
-
-
+        
+            this.setState({iconsType: "book"})
+        
         fetch(this.props.fetchData).then(res => res.json()).then((result) =>
-            this.setState({ icons: result })).then(() =>
-                this.setMaxCount()).catch(() => {this.Alert("Wystapił błąd. Brak odpowiedzi serwera. Spróbuj ponownie później."); 
-                this.setState({
+            this.setState({ icons: result })).then(() => {
+            this.showBooks();
+                })
+            .catch(() => {this.Alert("Wystapił błąd. Brak odpowiedzi serwera. Spróbuj ponownie później."); this.setState({
                     loaded: true
                 })}); 
 
-        this.getUserIconsId();
+        //this.getUserIconsId();
         console.log(this.state.icons);
         
 }
@@ -88,136 +74,73 @@ class YTArea extends Component {
         this.props.serverAlert(message);
     }
 
-     getUserIconsId = () => {
+ /*     getUserIconsId = () => {
 
      if(this.props.isAuthenticated) {
-        /* let data = {
+        let data = {
             UserId: this.props.userId
-        } */
-        
-        var config = {
-            headers: {Authorization: "Bearer " + this.props.jwtToken}
         }
-        axios.post(URL.api+URL.userIconsIds, null, config)
+        
+        axios.post(URL.api+URL.userIconsIds, data)
         .then((result) => {
            // debugger;
             this.setState({ userIconsId: result.data })});
-        //.catch(error => {this.Alert()}); 
+        
     }
-}
+} */
 
 
-/*      sccrollUp = () => {
-        //debugger;
-        scrollU(); }
-
-        scrollDown = () => {
-            //debugger;
-            scrollD(); } */
-            //https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=tCXGJQYZ9JA&key=AIzaSyC2s9N7qsU48BL83Zaj-OCE6pqpvtTsxtM
-//https://www.googleapis.com/youtube/v3/playlists
-
-
-    setMaxCount = () => {
-        if (this.state.icons.length > 0) {
-            var counts = [];
-            this.state.icons.map(song => { counts.push(parseInt(song.count)) });
-            var max_Count = Math.max(...counts);
-            this.setState({ maxCount: max_Count });
-
-            this.setState({ ytID: this.state.icons[this.state.icons.length - 1].id });
-           // this.setState({ mainTitle: this.state.songs[this.state.songs.length - 1].title })
-
-            var note = document.getElementById(this.state.icons[this.state.icons.length - 1].id)
-            this.setState({ nowPlayed: note.id });
-            note.style.boxShadow = this.state.playedShadow;
-
-            setTimeout(() => {
-              this.setState({
-                  loaded: true
-              });
-              var icons = document.getElementsByClassName("entity");
-          }, 0)
-            
-        }
-        else {
-            this.setState({ noIcons: true,  loaded: true });
-        }
-
-    }
-
+ 
     setSize = (c) => {
-        if(this.state.iconsType === "movie") {
-            return this.setSizeMovie(c);
-        }
-        if(this.state.iconsType === "radio") {
-            return this.setSizeSong(c);
-        }
-    }
-
-
-    setSizeSong = (c) => {
-        if (c === 0) {
-            return "30px";
-        }
-        if (c === 1) {
-            return "30px";
-        }
-        if (c === this.state.maxCount && this.state.maxCount === 2) {
-            return "50px";
-        }
-        if (this.state.maxCount === 1) {
-            return "30px";
-        }
-        else {
-            var result = (((30 * (c - this.state.maxCount)) / (this.state.maxCount - 1)) + 80);
-            return result + 'px';
-        }
-    }
-
-    setSizeMovie = (c) => {
-        return 0.85*c + 'px'
-    }
-
-    nextSongHandler = () => {
-
-        var randomInt = require('random-int');
-
-        var vidID = this.state.icons[randomInt(this.state.icons.length - 1)].id;
-        this.setState({ ytID: vidID });
-        var note = document.getElementById(vidID);
-
-        note.style.boxShadow = this.state.playedShadow;
-
-        var played = document.getElementById(this.state.nowPlayed);
-        if (played !== null) {
-            var prevId = this.state.nowPlayed;
-            this.setState(prevState => ({
-                prevPlayed: [...prevState.prevPlayed, prevId]
-              }))
-        }
-        this.setState({ nowPlayed: note.id });
-    }
-
-
-
-    onDbClick = (event) => {
-
-          var proops = this.state.userIconsId;
        
+        if(this.state.iconsType === "book") {
+            return this.setSizeBook(c);
+        }
+    }
+
+
+    setSizeBook = (c) => {
+        if (c > 0) {
+
+            return "30px";
+        }
+     
+    }
+
+
+
+    showBooks = () => {
+        if(this.state.icons.length>0) {
+        setTimeout(() => {
+            this.setState({
+                loaded: true
+            });
+            //var icons = document.getElementsByClassName("entity");
+        }, 2000)
+        this.setState({nowPlayed: this.state.icons[0].id});
+        this.setState({imgSource: this.state.icons[0].id});
+    }
+    else {
+        this.setState({
+            noIcons: true
+        });
+    }
+    }
+
+
+    onDbImgClick = (event) => {
+        
         var played = document.getElementById(this.state.nowPlayed);
         if (played !== null) {
-            //played.style.boxShadow = this.state.prevShadow;
-            //played.style.filter = "blur(5px)";
             var prevId = this.state.nowPlayed;
             this.setState(prevState => ({
                 prevPlayed: [...prevState.prevPlayed, prevId]
-              }))
-            
+            }))
         }
         this.setState({ nowPlayed: event.target.id });
-        this.setState({ ytID: event.target.id });
         var note = document.getElementById(event.target.id)
+        this.setState({imgSource: note.id});
+       // debugger;
         note.style.boxShadow = this.state.playedShadow;
     }
 
@@ -228,10 +151,7 @@ class YTArea extends Component {
 
         var entity = document.getElementById(event.target.id);
 
-
-        
         var titleMain = entity.title.replace("||","<br/>");
-        titleMain = titleMain.replace("||","<br/>");
         titleMain = titleMain.replace("||","<br/>");
         titleMain = titleMain.replace("||","<br/>");
         
@@ -242,21 +162,11 @@ class YTArea extends Component {
         //debugger;
         entity.style.transition = 'top 0s, left 0s';
         
-/*         while (typeof iconTitle == 'undefined') {
-            console.log("HOOOVERRR!!");
-            iconTitle =  document.getElementById("258");
-            iconTitle.innerHTML = entity.title;
-
-        } */
-
-/*         var iconTitle1 = document.getElementById("258");
-        //iconTitle.style.color = "rgba(235, 235, 235, 0.836)";
-        iconTitle1.innerHTML = entity.title;
-        var iconTitle2 = document.getElementById("258");
-        iconTitle2.innerHTML = entity.title; */
 
         var opacity = entity.style.opacity;
         
+        console.log("ON MOUSE ON "+entity.id);
+        console.log("OPACITY ->   " + opacity);
         if(entity.id !==  this.state.hoveredId)
         {
         this.setState({ actuallOpacity: opacity })
@@ -348,6 +258,57 @@ class YTArea extends Component {
         }
     }
 
+    screenManage = () => {
+        this.props.screenManage();
+    }
+
+
+    getHPosition = () => {
+        var randomInt = require('random-int');
+        return randomInt(101,200);
+    }
+
+    getWPosition = () => {
+        var randomInt = require('random-int');
+        return randomInt(-50,200);
+    }
+
+    getNiceHttp = (address) => {
+        var splitArr = address.split("//");
+        if(splitArr.length > 1) {
+            var reg = new RegExp("^www.");
+            var reg1 = new RegExp("/$");
+
+            var addr = splitArr[1];
+            addr = addr.replace(reg, "");
+            addr = addr.replace(reg1, "");
+
+            if(addr.length>40)
+            {
+                addr = addr.substring(0, 40) + "...";
+            }
+
+
+            return addr;
+        }
+        else {
+            return address;
+        }
+    }
+      
+    getBookWidth = (count) => {
+                //debugger;
+        var width = (20+ parseInt(count)*10) + "px";
+        return width;
+    }
+
+    getBookHeight = (count) => {
+        
+        var height = (30+ parseInt(count)*10) + "px";
+        return height;
+    }
+
+
     getShadow = (left, top, id) => {
 
         var entity = document.getElementById(id);
@@ -360,6 +321,7 @@ class YTArea extends Component {
                 left = ((parseFloat(left_) / document.documentElement.clientWidth) * 100); 
             }
         }
+
         if(this.state.nowPlayed == id)
         {
             return this.state.playedShadow;
@@ -382,36 +344,48 @@ class YTArea extends Component {
          }
     }
 
-    screenManage = () => {
-        this.props.manageScreen();
-    }
-
     render(props) {
         var randomInt = require('random-int');
 
-let field = "";
-        if(!this.state.loaded) {
-            field = <LoadingField/>
-        }
-        else {
-            field = <Field play={this.state.ytID} noIcons={this.state.noIcons} fromDesktop={false} show={this.state.loaded} nextSong={this.nextSongHandler} loadText={this.props.fetchData} />
 
-        }
 
-        let icons = this.state.icons.map(song => {
-//tu 1 bedzie dla tych ktore user ma juz na pulpicie i bedzie removeentity bez znikania
-// zapis do bazy zawsze z vh i vw - przy dodaniu ikony brac z bazy, przy aktualizacji pozycji przeliczac z px na vh vw
+/*         let icons = this.state.icons.map(song => {
+
             return (
-                <YTIcon  remover={this.userOwner(song.id)? 1 : 0} isAuth = {this.props.isAuthenticated}   title={song.title} yt={song.id} id={song.id}
+                <YTIcon  remover={this.userOwner(song.id)? 1 : 0} isAuth = {this.props.isAuthenticated} userId={this.props.userId}  title={song.title} yt={song.id} id={song.id}
                     linkTo={this.onDbClick}
                     classname="entity"
-                    size={this.setSize(parseInt(song.count)) }
+                    size={this.state.loaded? this.setSize(parseInt(song.count)) : '0px' }
                     location={ this.state.loaded? 
-                      {boxShadow: this.getShadow(parseInt(song.left),parseInt(song.top), song.id), top: song.top, left: song.left, transition: 'top '+2+'s, left '+2+'s', opacity: '0.5'}:
+                      {boxShadow: this.getShadow(parseInt(song.left),parseInt(song.top), song.id), top: song.top, left: song.left, transition: 'top '+2+'s, left '+2+'s', opacity: this.userOwner(song.id)? '0.2':'0.5'}:
                       {top: randomInt(101,200)+'vh', left: randomInt(-50,200)+'vw'}}
                     onHover={this.onHover}
                     onLeave={this.cleanTitle}
                     count={song.count}
+                />
+            )
+        }) */
+
+        let books = this.state.icons.map(book => {
+            return (
+                <BookIcon  remover={0}  isAuth={this.props.isAuthenticated} userId={this.props.userId}   yt={book.id} id={book.id}
+                classname= "entity"
+                    linkTo={this.onDbImgClick}
+                    
+                    location={ this.state.loaded? 
+                      {boxShadow: this.getShadow(parseInt(book.left), parseInt(book.top), book.id), 
+                        top: book.top, left: book.left, transition: 'top '+2+'s, left '+2+'s' , width: this.getBookWidth(book.count), height: this.getBookHeight(book.count)} :
+                      {top: this.getHPosition(101,200)+'vh', left: this.getWPosition(-50,200)+'vw',
+                     }}
+              
+                    title = {book.title}
+                    source = {book.id}
+                    onHover={this.onHover}
+                    onLeave={this.cleanTitle}
+                    srcWidth={this.getBookWidth(book.count)}
+                    srcHeight={this.getBookHeight(book.count)}
+                    fromFolder = {this.state.fromFolder} 
+                    newimage = {false}
                 />
             )
         })
@@ -425,7 +399,7 @@ let field = "";
      
             <div> <input id="ls"  onChange={this.liveSearch} placeholder="Wyszukaj..." class="switchSearch" type="text"/></div>
             <div id="prop" class="switchB" style={{ position: 'fixed', right: '130px', bottom: '6px', zIndex: '300' }} > <i class="icon-cog" />
-                <div id="propField">
+            <div id="propField">
                 <p/>
                 <hr/> 
                     <div>Jasność ikon:</div>
@@ -438,21 +412,21 @@ let field = "";
                   <hr/> 
                 </div>
             </div>
-                 
-                    {field}
+
+           <ImageField src={this.state.imgSource} sourceShow={this.getNiceHttp(this.state.imgSource)} 
+                noIcons={this.state.noIcons} fromDesktop={false}
+                source={this.state.imgSource}
+                show={this.state.loaded}/>
+
                 <div id = "258" class= "titleDiv"> </div>
                
-                {icons}
+                {books}
 
     <div class="containerIconsContainer">
                <div class="iconsContainer">
                
                 </div>
                 </div>
-
-
-
-         
             </div>
         );
     }  
@@ -462,7 +436,7 @@ const mapDispatchToProps = dispatch => {
     return {
 
         serverAlert: (message) => dispatch(showServerPopup(message)),
-        manageScreen: () => dispatch(manageScreen())
+        screenManage: () => dispatch(manageScreen()),
 
     };
 };
@@ -470,12 +444,11 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     
     return {
-        isAuthenticated: state.auth.jwttoken !== null,
-        //userId: state.auth.userId,
-        jwtToken: state.auth.jwttoken,
-        fullScreen: state.auth.fullScreen
+        isAuthenticated: state.auth.userId !== null,
+        userId: state.auth.userId,
+        fullScreen: state.auth.fullScreen,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(YTArea);
+export default connect(mapStateToProps, mapDispatchToProps)(BestSellers);
 

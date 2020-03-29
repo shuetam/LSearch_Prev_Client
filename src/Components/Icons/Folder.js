@@ -8,11 +8,18 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import {popup, showServerPopup, removingIcon} from '../../Store/Actions/auth';
 import {URL} from '../../environment'
+import ReactDOM from 'react-dom';
+import IconEditor from './IconEditor';
 
 class Folder extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            authConfig: {
+                headers: {Authorization: "Bearer " + this.props.jwtToken}
+            }
+        }
 
     }
 
@@ -26,7 +33,7 @@ class Folder extends Component {
             const data = {
                         Id: ID,
                         Type: "FOLDER",
-                        UserId: this.props.userId,
+                        //UserId: this.props.userId,
                         Title: name,
                         Top: entity.style.top,
                         Left: entity.style.left
@@ -34,7 +41,7 @@ class Folder extends Component {
 
         if(event.target.className == "disableEntity")
         { 
-            if(localStorage.getItem(this.props.userId+"F")==1) {
+           /*  if(localStorage.getItem(this.props.userId+"F")==1) {
                 
                 axios.post(URL.api+URL.removeIcon, data)
                 .then(() => {
@@ -43,10 +50,10 @@ class Folder extends Component {
                    this.props.sendToRemove(ID);
                 })
                 .catch(error => {console.log(error); this.Alert("Nie udało się usunąć folderu.")});
-            }
-            else {
+            } */
+           // else {
                 this.props.MagnagePopup(data, entity);
-            }
+           // }
 
         }
     }
@@ -76,6 +83,28 @@ class Folder extends Component {
       
         var removeIcon = <div id={this.props.id} onClick = {this.deleteFolder}
         title="Usuń folder"  class={classEntity}>&#43;</div> ;
+
+
+        var editIconField = <IconEditor 
+        onHover = {this.props.onHover}
+        onLeave = {this.props.onLeave}
+        //fromFolder={this.props.fromFolder}
+        //moveIcon={this.moveIcon}
+        id={this.props.id}
+        showTitleEditor={this.props.showTitleEditor}
+        title={this.props.title}
+        bottom={this.props.bottom}
+        iconType="FOLDER"></IconEditor>
+
+        var editIcon = 
+        <div id={this.props.id} 
+          class="editEntity" style={{left: this.props.leftEdit, top: this.props.topEdit}} ><i id={this.props.id}
+        title="" class="icon-dot-3"
+        />
+        {editIconField}
+        </div> 
+
+       
 
         var content = this.props.icon0?
 
@@ -108,9 +137,10 @@ class Folder extends Component {
             onMouseLeave={this.props.onLeave}>
             {content}
 
-
                     {removeIcon}
+
             <div class="folderLabel"  id={this.props.id} >{this.props.title}</div>
+                    {editIcon}
             </div>
             
            
@@ -120,6 +150,12 @@ class Folder extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        jwtToken: state.auth.jwttoken
+    };
+  };
+
 const mapDispatchToProps = dispatch => {
     return {
         MagnagePopup: (data, cross) => dispatch(popup(data, cross)),
@@ -128,4 +164,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-  export default connect( null, mapDispatchToProps )(Folder);
+  export default connect( mapStateToProps, mapDispatchToProps )(Folder);

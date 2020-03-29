@@ -18,25 +18,21 @@ class App extends Component {
 
     componentWillMount () {
         this.props.onTryAutoSignup();
+  
       }
 
-/*     scrollUp = () => {
-        //debugger;
-        scrollU(); }
 
-    scrollDown = () => {
-        scrollD();
-        } */
-
+      
     render() {
+       
         return (
             <BrowserRouter>
                 <div>
-                <ReactScrollWheelHandler upHandler={ this.scrollUp} downHandler={this.scrollDown}>
+                
                     <Route path={'/:id?'} component={Header} />
                     <Popup/>
                     <ServerPopup/>
-                </ReactScrollWheelHandler>
+               
                 </div>
             </BrowserRouter>
         );

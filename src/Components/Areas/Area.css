@@ -15,6 +15,37 @@
     opacity: 0.9;
 }
 
+.titleDivEdit {
+    position: fixed;
+    z-index: 700;
+    font-family: 'Mandali', sans-serif;
+    font-size: 20px;
+    font-weight: 100;
+    text-align: center;
+    color: rgba(241, 241, 241, 0.836);
+    opacity: 0.9;
+    padding: 1px;
+    z-index: 500;
+    top: 365px;
+    left: 0px;
+    right: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 560px;
+}
+
+.titleDivEdit input {
+    border-radius: 3px;
+    background-color: rgba(78, 78, 78, 0.404);
+    border-width: 0px;
+    height: 30px;
+    width: 560px;
+    font-family: 'Mandali', sans-serif;
+    font-size: 18px;
+    font-weight: 100;
+    color: rgba(197, 197, 197, 0.637);
+    text-align: center;
+}
 
 .title2 {
     box-shadow: rgb(255, 255, 255) 0px 0px 5px, rgb(255, 255, 255) 0px 0px 10px, rgb(255, 255, 255) 0px 0px 10px, rgba(231, 173, 64, 0.637) 0px 0px 10px, rgba(231, 173, 64, 0.637) 0px 0px 20px, rgba(231, 173, 64, 0.637) 0px 0px 10px, rgba(231, 173, 64, 0.637) 0px 0px 2px, rgba(231, 173, 64, 0.637) 0px 0px 5px;
@@ -50,20 +81,11 @@
     background-color: rgb(211, 211, 211);
   }
 
-  .folderLabel {
-    position: fixed;
-    color: rgba(197, 197, 197, 0.945);
-    font-family: 'Mandali', sans-serif;
-    background-color: rgba(0, 0, 0, 0);
-    font-size: 19px;
-    border-width: 1px;
-    top: 30px;
-    left: 40px;
-}
+
 
 .folder {
     position: fixed;
-    /* color: rgb(0, 0, 0); */
+    cursor: default;
     color: rgb(255, 255, 255);
     z-index: 157;
     background-color: rgba(0, 0, 0, 0.61);
@@ -172,7 +194,7 @@
     margin-left: -185px;
     top: 380px;
     width: 340px;
-    height: 110px;
+    height: 140px;
     background-color: rgba(32, 32, 32, 0.856);
     z-index: 153;
     color: rgba(255, 255, 255, 0.678); 

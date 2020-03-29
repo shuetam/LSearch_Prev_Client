@@ -1,11 +1,10 @@
 import { updateStore } from '../updateStore';
 import { connect } from 'react-redux';
-import {getIconsID} from '../Actions/icons'
 import axios from 'axios';
 
 const initialState = {
-    token: null,
-    userId: null,
+    jwttoken: null,
+   // userId: null,
     error: null,
     showPopup: false,
     showServerPopup: false,
@@ -14,10 +13,53 @@ const initialState = {
     serverMessage: "",
     addingIcon: null,
     removingIconId: null,
-
-
+    fullScreen: false
 };
 
+
+const manageScreen = (state, action) => {
+
+    var elem = document.documentElement;
+    
+
+
+    if((window.fullScreen) ||
+    (window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
+        //this.setState({fullScreen: false});
+        if (document.exitFullscreen) {
+            document.exitFullscreen()
+            .then(() => console.log("Document Exited form exit Full screen mode"))
+            .catch((err) => console.error(err));
+        } else if (document.mozCancelFullScreen) { /* Firefox */
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE/Edge */
+            document.msExitFullscreen();
+        }
+        
+        return updateStore( state, { 
+            fullScreen: false
+        } ); 
+    }
+    else {
+        //this.setState({fullScreen: true});
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen()
+            .then(() => console.log("Document Exited form Full screen mode"))
+            .catch((err) => console.error(err));
+        } else if (elem.mozRequestFullScreen) { /* Firefox */
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE/Edge */
+            elem.msRequestFullscreen();
+        }
+        return updateStore( state, { 
+            fullScreen: true
+        } ); 
+    }
+}
 
 
 const removingIcon = (state, action) => {
@@ -61,7 +103,7 @@ const managePopup = (state, action) => {
 };
 
 const showServerPopup = (state, action) => {
-     debugger;
+     //debugger;
      return updateStore( state, { 
          showServerPopup: true,
          serverMessage: action.message
@@ -86,10 +128,11 @@ const hidePopup = (state, action) => {
 const authLogin = (state, action) => {
     //this.props.GetUserIconsID(action.userId);
     return updateStore( state, { 
-        //token: action.token,
+        jwttoken: action.token,
         userId: action.userId,
         userName: action.userName,
         imageUrl: action.imageUrl,
+        userRole: action.userRole,
         error: null,
     } );      
     //debugger;
@@ -110,7 +153,7 @@ const authError = (state, action) => {
 };
 
 const authLogout = (state, action) => {
-    return updateStore(state, { token: null, userId: null });
+    return updateStore(state, { jwttoken: null, userId: null });
 };
 
 
@@ -128,7 +171,7 @@ const reducer = ( state = initialState, action ) => {
         case ('STOP_ADDING'): return stopIconAdding(state, action);
         case ('REMOVING'): return removingIcon(state, action);
         case ('STOP_REMOVING'): return stopRemoving(state, action);
-     
+        case ('SCREEN'): return manageScreen(state, action);
         
         
         default:

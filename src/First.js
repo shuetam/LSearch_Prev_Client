@@ -2,17 +2,18 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-
-
-
+import {manageScreen} from './Store/Actions/auth';
+import { connect } from 'react-redux';
 
 
 class First extends Component {
 
     state = {
         topFirst: '115px',
-        topGlass: '565px'
+        topGlass: '565px',
+        fullScreen: false,
     }
+
 
     animated = () => {
         setTimeout(() => {
@@ -21,6 +22,10 @@ class First extends Component {
                 topFirst: '315px', topGlass: '365px'
             })
         }, 1000)
+    }
+    
+    screenManage = () => {
+        this.props.screenManage();
     }
 
 
@@ -36,15 +41,18 @@ class First extends Component {
 
         return (
             <div>
+{/* <div onClick = {this.screenManage} class="fullScreen"><i 
+class={this.props.fullScreen? "icon-resize-small-alt" : "icon-resize-full-alt"}/>
 
-{/* <iframe src="https://open.spotify.com/embed/track/69kL0yREcZOBJbBz9UxN3L" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
- */}
+
+<div>{!this.props.fullScreen? "Aktywuj pełny ekran" : ""}</div></div> */}
+
 
                 <div style={{ top: this.state.topFirst }} className="First">Live<span style={{ color: "rgba(255, 255, 255, 0.5)" }}>S</span>earch</div>
 
-<div className="glassMain" style={{ top: "40px" }}>
+{/* <div className="glassMain" style={{ top: "40px" }}>
    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fevents%2F399159534066838%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId=2395943984012670" width="500" height="500" style={{border:'none', zIndex: "400", overflow: 'auto'}} scrolling="no" frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-  </div>          
+  </div>  */}         
 
                 <div className="glassMain" style={{ top: this.state.topGlass }}>
                     <div>Live<span style={{ color: "rgba(255, 255, 255, 0.5)" }}>S</span>earch</div>
@@ -59,4 +67,18 @@ class First extends Component {
     }
 }
 
-export default First;
+const mapStateToProps = state => {
+   
+    return {
+        fullScreen: state.auth.fullScreen,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        screenManage: () => dispatch(manageScreen()),
+
+    };
+};
+
+  export default connect( mapStateToProps, mapDispatchToProps )(First);

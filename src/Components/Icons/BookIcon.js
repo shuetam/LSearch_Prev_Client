@@ -8,27 +8,24 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import {popup, showServerPopup, addingIcon, removingIcon} from '../../Store/Actions/auth';
 import {URL} from '../../environment';
-import ReactDOM from 'react-dom';
-import IconEditor from './IconEditor';
 
-class YTIcon extends Component {
 
+class BookIcon extends Component {
 
     constructor(props) {
         super(props);
     this.state = {
        src: "",
+       noError: true,
        authConfig: {
         headers: {Authorization: "Bearer " + this.props.jwtToken}
-    },
-    title: this.props.title,
-    
+    }
     }
 }
-
+    
     componentDidMount() {
-        var src = 'https://i.ytimg.com/vi/' + this.props.id + '/hqdefault.jpg';
-        this.setState({src: src });
+
+        this.setState({src: this.props.id });
     }
 
     removeIcon = (data, cross) => {
@@ -43,6 +40,7 @@ class YTIcon extends Component {
     }
 
     disableIcon = (data, entityToDisable) => {
+        debugger;
           axios.post(URL.api+URL.removeIcon, data, this.state.authConfig)
             .then(() => {
                 //entityToDisable.className  = 'disable';
@@ -54,24 +52,25 @@ class YTIcon extends Component {
     }
 
 
-    moveIcon = () => {
+    moveIcon = (event) => {
 
-        var ID = this.props.id;
-        //var cross = event.target;
-        //var entity = document.getElementById(ID);
-        //var name = entity.title
+        var ID = event.target.id;
+        var cross = event.target;
+        var entity = document.getElementById(ID);
+        var name = entity.title
 
             const data = {
                         Id: ID,
-                        Type: "YT",
-                        //UserId: this.props.userId,
-                        //Title: name
+                        Type: "BOOK",
+                        Source: ID,
+                        UserId: this.props.userId,
+                        Title: name
                         }
 
         axios.post(URL.api+URL.moveIcon, data, this.state.authConfig)
           .then(() => {
              //entity.className  = 'disable';
-             this.props.sendToRemove(ID);
+             this.props.sendToRemove(entity.id);
               })
           .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się przenieść ikony.")});
   }
@@ -80,21 +79,21 @@ class YTIcon extends Component {
         this.props.serverAlert(message);
     }
 
+
     onError = () => {
         //alert('The image could not be loaded.');
         const logo = require('./149932.png');
         this.setState({src: logo });
+
+        if(this.props.newimage == true)
+        {
+            this.setState({noError: false});
+        }
       }
 
-      showEditor = () => {
-        this.setState({showEditor: true})
-      }
 
-      hideEditor = () => {
-        this.setState({showEditor: false})
-      }
 
-    YTHandler = (event) => {
+    IconHandler = (event) => {
         
         var ID = event.target.id;
         var cross = event.target;
@@ -104,6 +103,7 @@ class YTIcon extends Component {
         var Left_ = entity.style.left;
 
 
+      
         if((entity.style.top).includes("px")) {
             var topFlo = (parseFloat(Top_) / document.documentElement.clientHeight) * 100;
             if(topFlo>99) {
@@ -122,8 +122,9 @@ class YTIcon extends Component {
         
             const data = {
                         Id: ID,
-                        Type: "YT",
+                        Type: "BOOK",
                         //UserId: this.props.userId,
+                        Source: name,
                         Title: name,
                         Top: Top_,
                         Left: Left_,
@@ -131,48 +132,50 @@ class YTIcon extends Component {
                         }
 
     
-         //debugger;    
+             
         if(event.target.className == "addEntity")
         {
-            var url = URL.api+URL.addIcon;
-            console.log("DKASHKDJHASKJDSA - " + url);
             axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
             .then((response) => {
-                debugger;
-                cross.className = 'removeEntity'; cross.title = "Usuń z pulpitu";})
-            .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się dodać ikony.")});
+                //debugger;
+                if(response.data)
+                {
+                   // this.props.addToProps(icon)
+                   cross.className = 'removeEntity'; cross.title = "Usuń z pulpitu";
+                }
+                else {
+                    this.Alert("Wybrana ikona znajduje się już w Twojej kolekcji.");
+                }}
+               // debugger;
+            ).catch(error => { this.Alert("Nie udało się dodać ikony.")});
         }
 
         if(event.target.className == "addingEntity")
         {
-            //debugger;
+            debugger;
             const icon = {
                 id: ID,
                 title: "",
+                source: this.props.url,
                 top: entity.style.top,
                 left: entity.style.left,
-                type: "YT"
+                type: "BOOK"
             }
 
             axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
-            .then((response) => {
-                debugger;
-                if(response.data){
-                    this.props.addToProps(icon)
-                }
-                else {
-                    this.Alert("Wybrana ikona znajduje się już w Twojej kolekcji.");
-                }
+            .then(() => {
+               // debugger;
+               this.props.addToProps(icon)
                //entity.className = 'disable';
                 //cross.className = 'removeEntity'; cross.title = "Usuń z pulpitu";
             })
-            .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się dodać ikony.")});
+            .catch(error => {console.log(error); this.Alert("Nie udało się dodać ikony.")});
         }
 
         if(event.target.className == "removeEntity")
         {
-            //debugger;
-            if(localStorage.getItem(this.props.jwtToken+"Y")==1) {
+           // debugger;
+            if(localStorage.getItem(this.props.userId+"Y")==1) {
                 this.removeIcon(data, cross);
             }
             else {
@@ -184,7 +187,7 @@ class YTIcon extends Component {
         { 
             var entityToDisable = document.getElementById(ID);
 
-            if(localStorage.getItem(this.props.jwtToken+"Y")==1) {
+            if(localStorage.getItem(this.props.userId+"Y")==1) {
 
                 this.disableIcon(data, entityToDisable)
             }
@@ -199,7 +202,8 @@ class YTIcon extends Component {
     }
 
     render() {
-     
+        //var src =  this.props.id;
+        var src =  this.state.src;
         var classEntity = "";
         var iconTitle = ""
        
@@ -218,7 +222,6 @@ class YTIcon extends Component {
         {
             classEntity = "removeEntity";
             iconTitle = "Usuń z pulpitu";
-          
         }
         if(this.props.remover==2)
         {
@@ -226,52 +229,43 @@ class YTIcon extends Component {
             iconTitle = "Usuń z pulpitu";
         }
        
-        var addIcon = this.props.isAuth?   <div id={this.props.id} onClick = {this.YTHandler}
-        title={iconTitle}  class={classEntity}>&#43;</div> : "";
+        var addIcon = this.props.isAuth?   <div id={this.props.id} onClick = {this.IconHandler}
+        title={iconTitle} style={{left: "83%"}}  class={classEntity}>&#43;</div> : "";
 
+        var moveIcon = //window.location.href.includes("folder")?
+        (this.props.fromFolder && this.props.remover!==3)?
+         <div id={this.props.id} onClick = {this.IconHandler}
+        title={this.props.title}  class="moveEntity" style={{left: "-27%"}}><i id={this.props.id} onClick = {this.moveIcon}
+        title="Przenieś ikonę do głównego pulpitu" class="icon-left-bold" onClick = {this.moveIcon} /></div>  : "";
 
-            var editIconField = <IconEditor 
-            onHover = {this.props.onHover}
-            onLeave = {this.props.onLeave}
-            fromFolder={this.props.fromFolder}
-            moveIcon={this.moveIcon}
-            showImg={this.zoomHandler}
-            id={this.props.id}
-            showTitleEditor={this.props.showTitleEditor}
-            title={this.props.title}
-            bottom={this.props.bottom}
-            iconType="YT"></IconEditor>
-
-            var editIcon = (this.props.remover!==3 && this.props.fromDesk)? 
-            <div id={this.props.id} 
-            class="editEntity" style={{left: this.props.leftEdit}}><i id={this.props.id}
-            title="" class="icon-dot-3"
-            />
-            {editIconField}
-            </div> : "";
-
+        
         return (
-            <div onDoubleClick={this.props.linkTo}
+            <div  onDoubleClick={this.props.linkTo}
             
             title={this.props.title} id={this.props.id}
-            class={this.props.classname}
+            class={this.state.noError? this.props.classname : "disable"}
             style={this.props.location}
             onMouseOver={this.props.onHover}
             onMouseLeave={this.props.onLeave}>
+
+
+
                 <img 
-             
-                  id={this.props.id}
-                  title={this.props.title} 
-                  src={this.state.src} height={this.props.size} style={{ margin: '0px'}} 
-                  onError={this.onError}>
+                   class="bookImg"
+                   id={this.props.id}
+                   title={this.props.title} 
+                   src={this.state.src}
+                   height={this.props.srcHeight}
+                   width={this.props.srcWidth}
+                   onError={this.onError}
+                   >
                   </img> 
+                  
 
                 {/* <i class="icon-note" id={this.props.id}
                   title={this.props.title}  /> */} 
                     {addIcon}
-                    
-                    {editIcon}
-                 
+                    {moveIcon}
                    
                
                {/*    <div id={this.props.id} onClick = {this.saveYT}
@@ -281,12 +275,14 @@ class YTIcon extends Component {
         )
     }
 }
+
 const mapStateToProps = state => {
     return {
-        jwtToken: state.auth.jwttoken,
         url: state.auth.sourceUrl,
+        jwtToken: state.auth.jwttoken,
     };
   };
+
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -298,4 +294,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-  export default connect( mapStateToProps, mapDispatchToProps )(YTIcon);
+  export default connect( mapStateToProps, mapDispatchToProps )(BookIcon);

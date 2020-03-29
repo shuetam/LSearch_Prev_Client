@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'fontello';
-  src: url('../font/fontello.eot?68086202');
-  src: url('../font/fontello.eot?68086202#iefix') format('embedded-opentype'),
-       url('../font/fontello.woff2?68086202') format('woff2'),
-       url('../font/fontello.woff?68086202') format('woff'),
-       url('../font/fontello.ttf?68086202') format('truetype'),
-       url('../font/fontello.svg?68086202#fontello') format('svg');
+  src: url('../font/fontello.eot?14650356');
+  src: url('../font/fontello.eot?14650356#iefix') format('embedded-opentype'),
+       url('../font/fontello.woff2?14650356') format('woff2'),
+       url('../font/fontello.woff?14650356') format('woff'),
+       url('../font/fontello.ttf?14650356') format('truetype'),
+       url('../font/fontello.svg?14650356#fontello') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'fontello';
-    src: url('../font/fontello.svg?68086202#fontello') format('svg');
+    src: url('../font/fontello.svg?14650356#fontello') format('svg');
   }
 }
 */
@@ -60,3 +60,16 @@
 .icon-left-bold:before { content: '\e802'; } /* '' */
 .icon-cog:before { content: '\e803'; } /* '' */
 .icon-floppy:before { content: '\e804'; } /* '' */
+.icon-video-alt:before { content: '\e805'; } /* '' */
+.icon-book:before { content: '\e806'; } /* '' */
+.icon-video:before { content: '\e807'; } /* '' */
+.icon-resize-full-alt:before { content: '\e808'; } /* '' */
+.icon-resize-small-alt:before { content: '\e809'; } /* '' */
+.icon-edit:before { content: '\e80a'; } /* '' */
+.icon-dot-3:before { content: '\e80b'; } /* '' */
+.icon-link-ext:before { content: '\f08e'; } /* '' */
+.icon-gamepad:before { content: '\f11b'; } /* '' */
+.icon-calendar-empty:before { content: '\f133'; } /* '' */
+.icon-youtube-play:before { content: '\f16a'; } /* '' */
+.icon-instagram:before { content: '\f16d'; } /* '' */
+.icon-shopping-bag:before { content: '\f290'; } /* '' */

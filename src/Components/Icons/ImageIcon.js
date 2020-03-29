@@ -8,26 +8,37 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import {popup, showServerPopup, addingIcon, removingIcon} from '../../Store/Actions/auth';
 import {URL} from '../../environment';
+import ReactDOM from 'react-dom';
+import IconEditor from './IconEditor';
 
 
 class ImageIcon extends Component {
 
     constructor(props) {
         super(props);
+
     this.state = {
        src: "",
        noError: true,
+       showZoom: false,
+       authConfig: {
+        headers: {Authorization: "Bearer " + this.props.jwtToken}
+    },
+    //title: this.props.title,
+    showTitle: false
+  
     }
 }
     
     componentDidMount() {
 
         this.setState({src: this.props.id });
+        console.log("prevImgClass:" + this.props.imgClass)
     }
 
     removeIcon = (data, cross) => {
 
-        axios.post(URL.api+URL.removeIcon, data)
+        axios.post(URL.api+URL.removeIcon, data, this.state.authConfig)
         .then(() => {
             
             cross.className = 'addEntity';
@@ -37,8 +48,8 @@ class ImageIcon extends Component {
     }
 
     disableIcon = (data, entityToDisable) => {
-        debugger;
-          axios.post(URL.api+URL.removeIcon, data)
+        //debugger;
+          axios.post(URL.api+URL.removeIcon, data, this.state.authConfig)
             .then(() => {
                 //entityToDisable.className  = 'disable';
                 this.props.sendToRemove(entityToDisable.id);
@@ -49,46 +60,69 @@ class ImageIcon extends Component {
     }
 
 
-    moveIcon = (event) => {
+    moveIcon = () => {
 
-        var ID = event.target.id;
-        var cross = event.target;
+        var ID = this.props.id;
+       /*  var cross = event.target;
         var entity = document.getElementById(ID);
-        var name = entity.title
+        var name = entity.title */
 
             const data = {
                         Id: ID,
                         Type: "IMG",
-                        Source: this.props.url,
-                        UserId: this.props.userId,
-                        Title: name
+                        //Source: this.props.url,
+                        //UserId: this.props.userId,
+                        //Title: name
                         }
 
-        axios.post(URL.api+URL.moveIcon, data)
+        axios.post(URL.api+URL.moveIcon, data, this.state.authConfig)
           .then(() => {
              //entity.className  = 'disable';
-             this.props.sendToRemove(entity.id);
+             this.props.sendToRemove(ID);
               })
-          .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się przenieść ikony.")});
+          .catch(error => {console.log(error); this.Alert("Nie udało się przenieść ikony.")});
   }
 
     Alert = (message) => {
         this.props.serverAlert(message);
     }
 
+    showTitle = () => {
+        this.setState({showTitle: true});
+    }
 
-    onError = () => {
+    onError = (event) => {
         //alert('The image could not be loaded.');
         const logo = require('./149932.png');
-        this.setState({src: logo });
-
-        if(this.props.newimage == true)
-        {
-            this.setState({noError: false});
-        }
+       // this.setState({src: logo });
+console.log(event);
+       // if(this.props.newimage == true)
+        //{
+           // this.setState({noError: false});
+        //}
       }
 
+      zoomHandler = () => {
+          this.setState({showZoom: !this.state.showZoom});
+      }
 
+      outZoom = () => {
+          if(this.state.showZoom) {
+            this.setState({showZoom: false});
+          }
+      } 
+
+/*       showEditor = () => {
+        this.setState({showEditor: true});
+      }
+
+      hideEditor = () => {
+        this.setState({showEditor: false});
+      } */
+      
+      setTitle = (event) => {
+       
+      }
 
     IconHandler = (event) => {
         
@@ -100,9 +134,19 @@ class ImageIcon extends Component {
         var Left_ = entity.style.left;
 
 
+      
         if((entity.style.top).includes("px")) {
-            Top_= ((parseFloat(Top_) / document.documentElement.clientHeight) * 100) +"vh";
-            Left_ = ((parseFloat(Left_) / document.documentElement.clientWidth) * 100) + "vw";
+            var topFlo = (parseFloat(Top_) / document.documentElement.clientHeight) * 100;
+            if(topFlo>99) {
+                topFlo = 80;
+            }
+
+            var leftFlo = (parseFloat(Left_) / document.documentElement.clientWidth) * 100;
+            if(leftFlo>99) {
+                leftFlo = 80;
+            }
+            Top_= topFlo +"vh";
+            Left_ = leftFlo + "vw";
         }
         
         //var folderid = this.props.folderId
@@ -110,7 +154,7 @@ class ImageIcon extends Component {
             const data = {
                         Id: ID,
                         Type: "IMG",
-                        UserId: this.props.userId,
+                        //UserId: this.props.userId,
                         Source: this.props.url,
                         Title: name,
                         Top: Top_,
@@ -122,16 +166,16 @@ class ImageIcon extends Component {
              
         if(event.target.className == "addEntity")
         {
-            axios.post(URL.api+URL.addIcon, data)
+            axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
             .then(() => {
                // debugger;
                 cross.className = 'removeEntity'; cross.title = "Usuń z pulpitu";})
-            .catch(error => {console.log(error); this.Alert("Przepraszamy, nie udało się dodać ikony.")});
+            .catch(error => {console.log(error); this.Alert("Nie udało się dodać ikony.")});
         }
 
         if(event.target.className == "addingEntity")
         {
-            debugger;
+            //debugger;
             const icon = {
                 id: ID,
                 title: "",
@@ -141,10 +185,17 @@ class ImageIcon extends Component {
                 type: "IMG"
             }
 
-            axios.post(URL.api+URL.addIcon, data)
-            .then(() => {
-               // debugger;
-               this.props.addToProps(icon)
+            axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
+            .then((response) => {
+                debugger;
+                if(response.data)
+                {
+                    this.props.addToProps(icon)
+                }
+                else {
+                    this.Alert("Wybrana ikona znajduje się już w Twojej kolekcji.");
+                }
+
                //entity.className = 'disable';
                 //cross.className = 'removeEntity'; cross.title = "Usuń z pulpitu";
             })
@@ -154,7 +205,7 @@ class ImageIcon extends Component {
         if(event.target.className == "removeEntity")
         {
            // debugger;
-            if(localStorage.getItem(this.props.userId+"Y")==1) {
+            if(localStorage.getItem(this.props.jwtToken+"Y")==1) {
                 this.removeIcon(data, cross);
             }
             else {
@@ -166,25 +217,63 @@ class ImageIcon extends Component {
         { 
             var entityToDisable = document.getElementById(ID);
 
-            if(localStorage.getItem(this.props.userId+"Y")==1) {
+            if(localStorage.getItem(this.props.jwtToken+"Y")==1) {
 
                 this.disableIcon(data, entityToDisable)
             }
             else {
                 this.props.MagnagePopup(data, entityToDisable);
             }
-
-            
         }
+    }
 
-
+    getStyle = (prevImg) =>  {
+        if(prevImg === "imgZoom1") {
+            debugger;
+            return {bottom: "0px", left: "0px"};
+        }
+        if(prevImg === "imgZoom2") {
+            debugger;
+            return {top: "0px", left: "0px"};
+        }
+        if(prevImg === "imgZoom3") {
+            debugger;
+            return {bottom: "0px", right: "0px"};
+        }
+        if(prevImg === "imgZoom4") {
+            debugger;
+            return {top: "0px", right: "0px"};
+        }
     }
 
     render() {
         //var src =  this.props.id;
+        //debugger;
         var src =  this.state.src;
         var classEntity = "";
-        var iconTitle = ""
+        var iconTitle = "";
+        var imgClass = "";
+
+        if(this.props.quarter == 1) {
+            imgClass = "imgZoom1";
+            
+        }
+        if(this.props.quarter == 2) {
+            imgClass = "imgZoom2";
+            
+        }
+        if(this.props.quarter == 3) {
+            imgClass = "imgZoom3";
+         
+        }
+        if(this.props.quarter == 4) {
+            imgClass = "imgZoom4";
+         
+        }
+
+
+
+
        
         if(this.props.remover==3)
         {
@@ -212,14 +301,69 @@ class ImageIcon extends Component {
         var addIcon = this.props.isAuth?   <div id={this.props.id} onClick = {this.IconHandler}
         title={iconTitle} style={{left: "83%"}}  class={classEntity}>&#43;</div> : "";
 
-        var moveIcon = //window.location.href.includes("folder")?
-        (this.props.fromFolder && this.props.remover!==3)?
-         <div id={this.props.id} onClick = {this.IconHandler}
-        title={this.props.title}  class="moveEntity" style={{left: "-27%"}}><i id={this.props.id} onClick = {this.moveIcon}
-        title="Przenieś ikonę do głównego pulpitu" class="icon-left-bold" onClick = {this.moveIcon} /></div>  : "";
 
+        var imgPreview = this.state.showZoom?  
+        <img 
+        class={imgClass}
+        id={this.props.id}
+        title={this.props.title} 
+        src={this.state.src}
+        onMouseLeave={this.outZoom}
+        onError={this.onError}>
+        </img>: "";
+
+
+        ///////////////////////////
+       /*  var moveIcon = //window.location.href.includes("folder")?
+        (this.props.fromFolder && this.props.remover!==3)?
+         <div id={this.props.id} onClick = {this.moveIcon}
+          class="moveEntity" style={{left: "-27%"}}><i id={this.props.id} onClick = {this.moveIcon}
+        title="Przenieś ikonę do głównego pulpitu" class="icon-left-bold"/></div>  : "";
+ */
+       /*  var zoomIcon = this.props.remover!==3? 
+        <div id={this.props.id} onClick = {this.zoomHandler}
+          class="zoomEntity" style={{left: "83%"}}><i id={this.props.id}
+        title="Podgląd zdjęcia" class={this.state.showZoom? "icon-resize-small-alt" : "icon-resize-full-alt"} onClick = {this.zoomHandler} /></div> : "";
+         */
+
+ /*        var editIcon1 = this.props.remover!==3? 
+        <div id={this.props.id} onClick = {this.editHandler}
+          class="editEntity"><i id={this.props.id}
+        title="Edytuj tytuł" class="icon-edit" onClick = {this.editHandler} /></div> : ""; */
+
+  
+
+        ///////////////////////////
+
+        var editIconField = <IconEditor 
+        onHover = {this.props.onHover}
+        onLeave = {this.props.onLeave}
+        fromFolder={this.props.fromFolder}
+        moveIcon={this.moveIcon}
+        showImg={this.zoomHandler}
+        id={this.props.id}
+        showTitleEditor={this.props.showTitleEditor}
+        title={this.props.title}
+        bottom={this.props.bottom}
+        iconType="IMG"></IconEditor>
+
+        var editIcon = (this.props.remover!==3 && this.props.fromDesk)? 
+        <div id={this.props.id} 
+          class="editEntity" style={{left: this.props.leftEdit}}><i id={this.props.id}
+        title="" class="icon-dot-3"/>
+        {editIconField}
+        </div> : "";
         
+          /* var editTitle = this.props.remover!==3? 
+         <div id={this.props.id} class="titleDivEdit">
+          <input  id={this.props.id} type="text" 
+          onChange={this.setTitle} placeholder="Wyszukaj..."/></div>: "";  */ 
+         
+
         return (
+
+
+           
             <div  onDoubleClick={this.props.linkTo}
             
             title={this.props.title} id={this.props.id}
@@ -228,28 +372,28 @@ class ImageIcon extends Component {
             onMouseOver={this.props.onHover}
             onMouseLeave={this.props.onLeave}>
 
-
-
                 <img 
-                   class="entImg"
+                   class= {this.props.type =="BOOK"?  "entBook" : "entImg"}
                    id={this.props.id}
                    title={this.props.title} 
                    src={this.state.src}
-                   
-                   onError={this.onError}
-                   >
-                  </img> 
-                  
+                   onMouseLeave={this.outZoom}
+                   onError={this.onError}>
+                </img> 
 
+                 {imgPreview}
+                    
+             
                 {/* <i class="icon-note" id={this.props.id}
                   title={this.props.title}  /> */} 
                     {addIcon}
-                    {moveIcon}
-                   
-               
+                
+                    {editIcon}
+                  
                {/*    <div id={this.props.id} onClick = {this.saveYT}
                   title={this.props.title}  class="addEntity">&#43;</div> */}
             </div>
+                 
                   
         )
     }
@@ -257,7 +401,8 @@ class ImageIcon extends Component {
 
 const mapStateToProps = state => {
     return {
-        url: state.auth.sourceUrl,
+        jwtToken: state.auth.jwttoken,
+        
     };
   };
 
@@ -272,4 +417,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-  export default connect( null, mapDispatchToProps )(ImageIcon);
+  export default connect( mapStateToProps, mapDispatchToProps )(ImageIcon);

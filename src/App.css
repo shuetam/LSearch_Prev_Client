@@ -1,3 +1,28 @@
+/* Chrome, Safari and Opera syntax */
+:-webkit-full-screen {
+  background-color: rgb(0, 0, 0);
+}
+
+/* Firefox syntax */
+:-moz-full-screen {
+  background-color: rgb(0, 0, 0);
+}
+
+/* IE/Edge syntax */
+:-ms-fullscreen {
+  background-color: rgb(0, 0, 0);
+}
+
+/* Standard syntax */
+:fullscreen {
+  background-color: rgb(0, 0, 0);
+}
+
+
+
+
+
+
 .App {
   text-align: center;
 }
@@ -8,7 +33,9 @@
 }
 
 .App-header {
-  background-color: #222;
+  background: rgb(23,36,0);
+  background: linear-gradient(234deg, rgb(0, 0, 0) 0%, 
+  rgb(4, 4, 77) 30%, rgb(0, 0, 0) 100%);
   height: 150px;
   padding: 20px;
   color: white;
@@ -65,6 +92,24 @@ body{
     transition: top 3s;
     z-index: 300;
     width: 250px;
+}
+
+.fullScreen {
+  font-size: 18px;
+  color: rgba(170, 170, 170, 0.637);
+  display: inline-flex;
+  bottom: 15px;
+  position: fixed;
+  z-index: 310;
+  left: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: color 1s;
+}
+
+.fullScreen:hover {
+  color: rgb(233, 233, 233);
+  display: block;
 }
 
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import './Area.css';
+import '../Areas/Area.css';
 import Header from '../Header/Header';
 import Field from '../Fields/Field';
 import { Link, Route, NavLink } from 'react-router-dom';
@@ -17,7 +17,7 @@ import {URL} from '../../environment'
 
 
 
-class YTArea extends Component {
+class YTAreaAdmin extends Component {
 
     constructor(props) {
         super(props);
@@ -49,6 +49,13 @@ class YTArea extends Component {
             userIconsId: [],
             prevPlayed: [],
             noIcons: false,
+            editedTitle: "",
+            editedID: "",
+            showEditor: false,
+            nowTitle: "",
+            authConfig: {
+                headers: {Authorization: "Bearer " + this.props.jwtToken}
+            },
         }
     }
 
@@ -66,14 +73,44 @@ class YTArea extends Component {
             this.setState({iconsType: "radio"})
         }
 
+/////////////////////////////////////////
+/* if(this.props.isAuthenticated) {
+    var config = {
+        headers: {Authorization: "Bearer " + this.props.jwtToken}
+    }
+
+    axios.post(this.props.fetchData, null, config)
+    .then((result) => 
+            this.setState({ icons: result.data })).then(() =>
+                this.setMaxCount()).catch((error) => {this.Alert("Coś poszło nie tak");
+                console.log(error.message); 
+                this.setState({
+                    loaded: true
+                })}); 
+            } */
+///////////////////////////////////////
 
 
-        fetch(this.props.fetchData).then(res => res.json()).then((result) =>
-            this.setState({ icons: result })).then(() =>
+debugger; 
+        if(this.props.takeAllErrors)
+        {
+            axios.post(URL.api+URL.getallerrors, null, this.state.authConfig)
+            .then((result) => 
+                this.setState({ icons: result.data }))
+                .then(() =>
+                this.setMaxCount()).catch(() => {this.Alert("Wystapił błąd. Brak odpowiedzi serwera. Spróbuj ponownie później."); 
+                this.setState({
+                    loaded: true
+                });})
+            }
+            else {
+                fetch(this.props.fetchData).then(res => res.json()).then((result) =>
+                this.setState({ icons: result })).then(() =>
                 this.setMaxCount()).catch(() => {this.Alert("Wystapił błąd. Brak odpowiedzi serwera. Spróbuj ponownie później."); 
                 this.setState({
                     loaded: true
                 })}); 
+            }
 
         this.getUserIconsId();
         console.log(this.state.icons);
@@ -204,7 +241,8 @@ class YTArea extends Component {
     onDbClick = (event) => {
 
           var proops = this.state.userIconsId;
-       
+          var entity = document.getElementById(event.target.id);
+
         var played = document.getElementById(this.state.nowPlayed);
         if (played !== null) {
             //played.style.boxShadow = this.state.prevShadow;
@@ -213,10 +251,16 @@ class YTArea extends Component {
             this.setState(prevState => ({
                 prevPlayed: [...prevState.prevPlayed, prevId]
               }))
-            
         }
-        this.setState({ nowPlayed: event.target.id });
         this.setState({ ytID: event.target.id });
+        
+        this.setState({ nowPlayed: event.target.id });
+        this.setState({ nowTitle: entity.title });
+
+        this.setState({editedTitle: entity.title });
+        this.setState({editedID: entity.id });
+
+        this.setState({showEditor: true});
         var note = document.getElementById(event.target.id)
         note.style.boxShadow = this.state.playedShadow;
     }
@@ -228,8 +272,6 @@ class YTArea extends Component {
 
         var entity = document.getElementById(event.target.id);
 
-
-        
         var titleMain = entity.title.replace("||","<br/>");
         titleMain = titleMain.replace("||","<br/>");
         titleMain = titleMain.replace("||","<br/>");
@@ -386,6 +428,100 @@ class YTArea extends Component {
         this.props.manageScreen();
     }
 
+editTitle = (value) => {
+        debugger;
+        this.setState({editedTitle: value})
+}
+
+editID = (value) => {
+    debugger;
+    this.setState({editedID: value})
+}
+
+hideEditor = (value) => {
+    //debugger;
+    this.setState({showEditor: false})
+}
+
+
+changeYoutubeLocation = () => {
+
+    var id = this.state.nowPlayed;
+    var icon = document.getElementById(id);
+    var topEl = icon.style.top; 
+    var leftEl = icon.style.left;
+
+        var topFlo = (parseFloat(topEl) / document.documentElement.clientHeight) * 100;
+        if(topFlo>99) {
+            topFlo = 90;
+        }
+
+        var leftFlo = (parseFloat(leftEl) / document.documentElement.clientWidth) * 100;
+        if(leftFlo>99) {
+            leftFlo = 90;
+        }
+        var top = topFlo +"vh";
+        var left = leftFlo + "vw";
+
+        var data = {
+            Id:  id,
+            Left: left,
+            Top: top
+           }
+
+           axios.post(URL.api+URL.changeLocation, data, this.state.authConfig)
+           .then((result) => {
+             debugger; 
+             this.Alert(result.data.top);   
+               })
+           .catch(error => {
+               this.Alert("Nie udało się zmienić lokacji. Spróbuj ponownie później.")}); 
+
+}
+
+
+editYoutubeHandler = () => {
+
+     var title = this.state.nowTitle;
+     var id = this.state.nowPlayed;
+
+    var newId = this.state.editedID;
+    var newTitle = this.state.editedTitle;
+
+    var data = {
+        name: title,
+        youTubeId: id,
+        newYouTubeId: newId,
+        newName: newTitle
+    }
+    debugger; 
+    axios.post(URL.api+URL.editYoutube, data, this.state.authConfig)
+    .then((result) => {
+      debugger; 
+      this.Alert(result.data.newName);   
+        })
+    .catch(error => {
+        this.Alert("Nie udało się zmienić ikony. Spróbuj ponownie później.")}); 
+}
+
+
+deleteYoutubeHandler = () => {
+
+    var id = this.state.nowPlayed;
+    debugger;
+    var data = {
+        youTubeId: id  
+    }
+   axios.post(URL.api+URL.deleteYoutube, data, this.state.authConfig)
+   .then((result) => {
+     debugger; 
+     this.Alert(result.data);   
+       })
+   .catch(error => {
+       this.Alert("Nie udało się usunąć ikony. Spróbuj ponownie później.")}); 
+}
+
+
     render(props) {
         var randomInt = require('random-int');
 
@@ -397,6 +533,9 @@ let field = "";
             field = <Field play={this.state.ytID} noIcons={this.state.noIcons} fromDesktop={false} show={this.state.loaded} nextSong={this.nextSongHandler} loadText={this.props.fetchData} />
 
         }
+
+
+       // let adminCheck =  <input name="adminB" type="checkbox" id="adminBox" />;
 
         let icons = this.state.icons.map(song => {
 //tu 1 bedzie dla tych ktore user ma juz na pulpicie i bedzie removeentity bez znikania
@@ -416,14 +555,49 @@ let field = "";
             )
         })
 
+        var isChecked = document.getElementById("adminBox");
+
+        let editYoutube = (this.state.showEditor &&  isChecked.checked)?
+        <div style={{zIndex:"200" }}  class="titleDivEdit">
+        <input id="editT" type="text"
+        autofocus="true"
+        style={{backgroundColor: "black" }} 
+        onKeyPress = {this.onKeyTitle}
+         onChange={e => this.editTitle(e.target.value)} 
+         value={this.state.editedTitle} /> 
+
+      <input id="editID" type="text"
+        autofocus="true"
+        style={{backgroundColor: "black" }} 
+        onKeyPress = {this.onKeyTitle}
+         onChange={e => this.editID(e.target.value)} 
+         value={this.state.editedID} /> 
+
+         <div style={{alignItems: "center"}}>
+         <button class="titleButton" onClick={this.editYoutubeHandler} style={{fontSize: 12, padding: "2px",  width: '60px'}}>Ok</button>
+         &nbsp;
+         <button class="titleButton" onClick={this.changeYoutubeLocation}  style={{fontSize: 12, padding: "2px",  width: '60px'}}>Change location</button>
+         &nbsp;
+         <button class="titleButton" onClick={this.hideEditor}  style={{fontSize: 12, padding: "2px",  width: '60px'}}>Hide</button>
         
+        
+         <button class="titleButton" onClick={()=> window.open("https://www.youtube.com/results?search_query=" + this.state.nowTitle, "_blank")}  style={{fontSize: 14, padding: "2px",  width: '60px'}}>Search -></button>
+        
+         <br/>
+         <p/>
+         <button class="titleButton" onClick={this.deleteYoutubeHandler}  style={{fontSize: 13, backgroundColor: "red",  padding: "2px",  width: '80px'}}>DELETE</button>
+         
+         </div>
+         </div> : "";
 
             return (
                 
                 <div>
 
      
-            <div> <input id="ls"  onChange={this.liveSearch} placeholder="Wyszukaj..." class="switchSearch" type="text"/></div>
+            <div>
+             
+                 <input id="ls"  onChange={this.liveSearch} placeholder="Wyszukaj..." class="switchSearch" type="text"/></div>
             <div id="prop" class="switchB" style={{ position: 'fixed', right: '130px', bottom: '6px', zIndex: '300' }} > <i class="icon-cog" />
                 <div id="propField">
                 <p/>
@@ -442,9 +616,10 @@ let field = "";
                     {field}
                 <div id = "258" class= "titleDiv"> </div>
                
+               {editYoutube}
                 {icons}
 
-    <div class="containerIconsContainer">
+            <div class="containerIconsContainer">
                <div class="iconsContainer">
                
                 </div>
@@ -472,10 +647,11 @@ const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.jwttoken !== null,
         //userId: state.auth.userId,
+        isAdmin: state.auth.userRole == "ADMIN",
         jwtToken: state.auth.jwttoken,
         fullScreen: state.auth.fullScreen
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(YTArea);
+export default connect(mapStateToProps, mapDispatchToProps)(YTAreaAdmin);
 

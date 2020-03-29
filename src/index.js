@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 import authReducer from './Store/Reducers/auth';
-import iconsReducer from './Store/Reducers/icons';
+
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers  } from 'redux';
 import thunk from 'redux-thunk';

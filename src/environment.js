@@ -2,11 +2,14 @@
 
 export const URL = {
 
-    api: "http://localhost:53071/api/",
+    api: "http://localhost:53072/api/", 
+    //api: "http://localhost:5000/api/", 
 
     login: "SocialUser/user",
     radioSongs: "song/allradiosongs/",
     randomSongs: "song/radiorandom",
+    //tvAdminMovies: "adminmovie/takemovies",
+    //radioAdminSongs: "adminsong/allradiosongs/",
     tvMovies: "movie/takemovies",
     userFolders: "UserDesktop/getfolders",
     addToFolder: "UserDesktop/addtofolder",
@@ -18,8 +21,24 @@ export const URL = {
     userIcons: "UserDesktop/geticons",
     userImages: "UserDesktop/getimages",
     moveIcon: "UserDesktop/movefromfolder",
-    findIcons: "UserDesktop/findiconsfromurl"
+    findIcons: "UserDesktop/findiconsfromurl",
+    bestsellers: "bestsellers/getbestsellers",
+    changeTitle: "UserDesktop/changetitle",
+    userSpotify: "UserDesktop/getspotify",
+    editYoutube: "admin/edityoutube",
+    changeLocation: "admin/changeyoutubelocation",
+    deleteYoutube: "admin/deleteyoutube",
+    getallerrors: "admin/getallerrors"
 }
+
+export const PATHES = {
+    songs: '/muzyka_radio',
+    songsAdmin: '/songsadmin',
+    movies: '/filmy_tv',
+    moviesAdmin: '/moviesadmin'
+
+}
+
 
 
 

@@ -17,7 +17,7 @@ class ServerPopup extends Component {
         return (
         <div class="popup" style={{top: this.props.showPopup? "30px" : "-200px"}}>
 
-           {this.props.message} <br/>Brak odpowiedzi serwera.
+           {this.props.message} {/* <br/>Brak odpowiedzi serwera. */}
         <div style={{display: "flex", padding: "5px", marginLeft: "55px",marginRight: "55px"}}>
             <div class="popupButtton" onClick={this.okClick}>OK</div>
         </div>          
@@ -30,7 +30,7 @@ class ServerPopup extends Component {
 
 
 const mapStateToProps = state => {
-   debugger;
+   //debugger;
     return {
         message: state.auth.serverMessage,
         showPopup: state.auth.showServerPopup

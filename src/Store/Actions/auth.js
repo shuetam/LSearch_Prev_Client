@@ -1,6 +1,12 @@
 import { useCookies } from 'react-cookie';
 
 
+export const manageScreen = () => {
+    return {
+        type: 'SCREEN',
+        
+    };
+    };
 
 
 export const removingIcon = (id) => {
@@ -62,11 +68,11 @@ export const popup = (data, entity) => {
 
 
 
-export const login = (userId,  userName, imageUrl) => {
+export const login = (userName, imageUrl, token, userRole) => {
     return {
         type: 'AUTH_LOGIN',
-        userId: userId,
-        //token: token,
+        userRole: userRole,
+        token: token,
         userName: userName,
         imageUrl: imageUrl
     };
@@ -75,8 +81,9 @@ export const login = (userId,  userName, imageUrl) => {
 
 export const authLogout = () => {
 
-    document.cookie = "user_Id" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = "image_Url" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    //document.cookie = "user_Id" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = "JT" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = "user_Name=" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     document.cookie = "image_Url" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
     //localStorage.removeItem('token');
@@ -107,15 +114,15 @@ export const setAuthTimeout = () => {
 };
 
 
-export const authLogin = (userId, userName, imageUrl) => {
+export const authLogin = (userId, userName, imageUrl, token, userRole) => {
     return dispatch => {
-
+//debugger;
        /*  const authData = {
             userId: userId,
             token: token,
             logWith: logWith
         }; */
-        debugger;
+       // debugger;
         
                 /// here send data to server and if userId exists return image and name - or change
                 // them if are diffrent. If new user save user with name and imageUrl and go to login action.
@@ -131,11 +138,12 @@ export const authLogin = (userId, userName, imageUrl) => {
                 d.setTime(d.getTime() + (exdays*24*60*60*1000));
                 var expires = "expires="+ d.toUTCString();
 
-                document.cookie = "user_Id=" + userId + ";" + expires + ";path=/";
+                //document.cookie = "user_Id=" + userId + ";" + expires + ";path=/";
+                document.cookie = "JT=" + token + ";" + expires + ";path=/";
                 document.cookie = "user_Name=" + userName + ";" + expires + ";path=/";
                 document.cookie = "image_Url=" + imageUrl + ";" + expires + ";path=/";
                 
-                dispatch(login(userId, userName, imageUrl));
+                dispatch(login( userName, imageUrl, token, userRole));
                 //document.cookie
                 //const [cookies, setCookie] = useCookies(['user']);
                 //setCookie('user', user, { path: '/' });
@@ -170,10 +178,10 @@ export const authCheckState = () => {
     return dispatch => {
         // get userId from cookie
         //const token = localStorage.getItem('userId');
-        const userID = getCookie("user_Id");
+        const jwToken = getCookie("JT");
         //const expiresIn = localStorage.getItem('expiresIn');
-        debugger;
-        if (!userID) {
+       // debugger;
+        if (!jwToken) {
             dispatch(authLogout());
         } //else {
            // const expirationDate = new Date(localStorage.getItem('expirationDate'));
@@ -181,15 +189,16 @@ export const authCheckState = () => {
                 //dispatch(authLogout());
             //}
              else {
-                 debugger;
+                 //debugger;
                  //// here get only userId from cookie and send it to server to get userName and iamgeUrl
                 //const userId = localStorage.getItem('userId');
                 //const userName = localStorage.getItem('userName');
                 //const imageUrl = localStorage.getItem('imageUrl');
-                const userId = getCookie("user_Id");
+                //const userId = getCookie("user_Id");
                 const userName = getCookie("user_Name");
                 const imageUrl = getCookie("image_Url");
-                dispatch(login(userId, userName, imageUrl));
+                const jwttoken = getCookie("JT");
+                dispatch(login(userName, imageUrl, jwttoken));
                 //dispatch(setAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));
                 //dispatch(setAuthTimeout());
             }   
