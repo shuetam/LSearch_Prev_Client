@@ -16,12 +16,15 @@ const initialState = {
     fullScreen: false
 };
 
+const  manageEsc = (state, action) => {
+    
+}
+
 
 const manageScreen = (state, action) => {
 
     var elem = document.documentElement;
     
-
 
     if((window.fullScreen) ||
     (window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
@@ -37,7 +40,12 @@ const manageScreen = (state, action) => {
         } else if (document.msExitFullscreen) { /* IE/Edge */
             document.msExitFullscreen();
         }
-        
+
+       /*  exitFullscreen
+        mozCancelFullScreen
+        webkitExitFullscreen
+        msExitFullscreen */
+
         return updateStore( state, { 
             fullScreen: false
         } ); 
@@ -172,6 +180,8 @@ const reducer = ( state = initialState, action ) => {
         case ('REMOVING'): return removingIcon(state, action);
         case ('STOP_REMOVING'): return stopRemoving(state, action);
         case ('SCREEN'): return manageScreen(state, action);
+        case ('ESC_MANAGE'): return manageEsc(state, action);
+        
         
         
         default:

@@ -19,7 +19,7 @@ import randoom from 'random-int';
 import axios from '../../axios-song';
 import { connect } from 'react-redux';
 import { showServerPopup, addingIcon, stopAddingIcon, stopRemovingIcon, manageScreen} from '../../Store/Actions/auth';
-import { URL } from '../../environment'
+import { URL, PATHES } from '../../environment'
 
 
 
@@ -71,14 +71,6 @@ class UserDesktop extends Component {
             images: [
             ],
             spotify: [
-             /*     {
-                     id: "https://open.spotify.com/embed/track/4w8niZpiMy6qz1mntFA5uM",
-                    type: "SPOTIFY",
-                    title: "SPOTIFY TEST PLAYLIST",
-                    top: "50vh",
-                    left: "30vw" ,
-                    source: ""
-                }  */
             ],
             iconsFound: false,
             addingIcon: false,
@@ -111,6 +103,8 @@ class UserDesktop extends Component {
 
     componentDidMount() {
 
+        document.addEventListener("keydown", this.keyManager, false);
+
         if(this.props.isAuthenticated)
         {
             var propss = this.props;
@@ -124,6 +118,10 @@ class UserDesktop extends Component {
             this.getIcons(this.props.userId, folderId);
         }
     }
+
+    componentWillUnmount(){
+        document.removeEventListener("keydown", this.keyManager, false);
+      }
 
     componentWillUpdate() {
 
@@ -213,13 +211,7 @@ class UserDesktop extends Component {
             folderId: folderId
             
         };
-       /*  const axiosConfig = {
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
-                'Access-Control-Allow-Credentials': 'true'
-            }}; 
-            */
+ 
         
      axios.post(URL.api + URL.userImages, data, this.state.authConfig)
         .then((result) => {
@@ -274,6 +266,22 @@ class UserDesktop extends Component {
         else {
             return false;
         }
+    }
+
+    keyManager = (event) => {
+
+        if(event.keyCode === 27) {
+
+            if(this.state.addingIcon) {
+                this.stopAdding();
+            }
+
+            if(this.state.showTitleEdit) {
+                this.editTitleCancel();
+            }
+
+          }
+       
     }
 
 
@@ -338,52 +346,6 @@ class UserDesktop extends Component {
               });
         }
         
-        //if(this.state.icons.length == 0 && this.state.images.length==0) {
-            //debugger;
-            //this.setState({ entityID: 'QRi3ULhyQq0'});
-         /*    this.setState({imgField: false});
-            this.setState({ytField: false});
-            if(this.state.folders.length>0) {
-                this.setState({infoField: false});
-            }
-            else {
-                this.setState({infoField: true});
-            } */
-                
-
-     /*        this.setState({
-                loadedIcons: true
-              });
-        }
-        if (this.state.icons.length > 0 || this.state.images.length>0) {
-            //debugger;
-
-            var entityID = "";
-
-        if(this.state.icons.length>0) {
-            this.setState({imgField: false});
-            this.setState({ytField: true});
-            this.setState({infoField: false});
-            var note = document.getElementById(this.state.icons[this.state.icons.length - 1].id)
-            //note.style.boxShadow = this.state.playedShadow;
-            entityID = note.id;
-            this.setState({ nowPlayed: note.id });
-        }
-        else {
-            //debugger;
-            this.setState({imgSource: this.state.images[this.state.images.length - 1].source })
-            var image = document.getElementById(this.state.images[this.state.images.length - 1].id)
-            
-            entityID = image.id;
-            this.setState({ nowPlayed: image.id });
-            this.setState({imgField: true});
-            this.setState({ytField: false});
-            this.setState({infoField: false});
-            
-        }
-        
-        this.setState({ entityID: entityID }); */
-  
     }
 
 
@@ -432,7 +394,7 @@ class UserDesktop extends Component {
 
 
     openFolder = (event) => {
-        this.props.history.push('/profil/folder/' + event.target.id);
+        this.props.history.push(PATHES.userFolder + event.target.id);
         //this.getIcons( this.props.userId, event.target.id);
     }
 
@@ -569,25 +531,7 @@ class UserDesktop extends Component {
 
                 document.getElementById("saveIcons").className = "switchB";
 
-/*              var elTop = elmnt.offsetTop - pos2;
-                var elLeft = elmnt.offsetLeft - pos1;
 
-                var foldLeft0 = fold.style.left;
-                var foldLeft1 = foldLeft0 + 65;
-
-                var foldTop0 = fold.style.top;
-                var foldTop1 = foldTop0 + 65;
-
-                var vert =   elLeft < foldLeft1 && elLeft > foldLeft0
-                var hori =   elTop < foldTop1 && elTop > foldTop0
-                if(vert && hori)
-                {
-                    debugger;
-                    elmnt.style.height = "2px";
-                } */
-                
-                //var icon = this.state.icons.find(x => x.id === elmnt.id);
-                //debugger;
             }
 
             function closeDragElement() {
@@ -748,23 +692,13 @@ class UserDesktop extends Component {
     }
 
     removeIconById = (Id) => {
-        //var array = [...this.state.icons];
-       // var fIcon = array.find(x => x.id === Id);
-
+   
        function checkId (icon) {
         return icon.id !== Id
        }
 //debugger;
            this.setState( {icons:  [...this.state.icons].filter(checkId)});
 
-
-           // delete this.state.icons[fIcon.id];
-                 //if(fIcon)
-                 //{
-                     //var index = this.state.icons.indexOf(fIcon)
-                     //array.splice(index, 1);
-                     //this.setState({icons: array});
-                 //}
             }
 
     disableIconById = (Id) => {
@@ -827,11 +761,18 @@ class UserDesktop extends Component {
         for (var i = 0; i < icons.length; i++) {
             icons[i].style.opacity = event.target.value / 100;
         }
+
+        var folders = document.getElementsByClassName("folder");
+        //debugger;
+        for (var i = 0; i < folders.length; i++) {
+            folders[i].style.opacity = event.target.value / 100;
+        }
+
     }
 
     editFolder = (event) => { 
     
-        document.getElementById(event.target.id).defaultValue = event.target.value;
+        document.getElementById(event.trget.id).defaultValue = event.target.value;
         var ttt = event.target.value;
     }
 
@@ -855,9 +796,11 @@ class UserDesktop extends Component {
     }
 
     onKeyTitle = (event) => {
+      
         if(event.key == "Enter") {
             this.editTitleHandler();
         }
+
     }
 
 
@@ -935,17 +878,6 @@ class UserDesktop extends Component {
             document.getElementById("258").innerHTML = ""; 
         }, 1500)
     }
-
-
-
-
-
-/*     pressFolder = (event) => {
-        debugger;
-        if(event.key == "Enter") {
-            this.addFolderHandler();
-        }
-    } */
 
 
 
@@ -1057,29 +989,7 @@ class UserDesktop extends Component {
             } else {
                 this.setState({wrongWWW: true});
             }
-     
-  /*       this.setState(prevState => ({
-            newIcons: [...prevState.newIcons, icon, icon1, icon2, icon3, icon4 ]
-          })); */
-//debugger;
 
-          //if(this.state.newIcons.length==0 && this.state.newImages.length==0) {
-            //this.setState({noIconsFound: true});
-       // }
-     
-
-        
-
-
-/*         axios.post(URL.api+URL.createFolder, data)
-        .then((result) => {
-          
-            this.setState(prevState => ({
-                folders: [...prevState.folders, result.data]
-              }));
-              document.getElementById("fol").value = "";
-            })
-        .catch(error => {this.Alert("Przepraszamy, wystąpił błąd przy próbie utworzenia folderu.")});  */
     }
 
         liveSearch = (event) => {  
@@ -1101,7 +1011,7 @@ class UserDesktop extends Component {
     }
 
     backToDesktop = () => {
-        this.props.history.push('/profil/pulpit');
+        this.props.history.push(PATHES.userPulpit);
     }
 
     
@@ -1169,11 +1079,7 @@ class UserDesktop extends Component {
                 }
                 var top = topFlo +"vh";
                 var left = leftFlo + "vw";
-            
 
-            //var top = ((parseFloat(topEl) / document.documentElement.clientHeight) * 100) +"vh";
-            //var left = ((parseFloat(leftEl) / document.documentElement.clientWidth) * 100) + "vw";
-           
             //icons[i].style.top = top;
             //icons[i].style.left = left;
             var Id = icons[i].id;
@@ -1386,9 +1292,7 @@ class UserDesktop extends Component {
         }
     }
 
-    screenManage = () => {
-        this.props.screenManage();
-    }
+   
 
     switchAddIcon = (event) => {
         document.getElementById("iLink").value = "";
@@ -1644,6 +1548,8 @@ class UserDesktop extends Component {
                 )
             })
 
+       
+
         let addingInfo = this.state.wrongWWW?
         <div style={{color: 'red'}}> Nieprawidłowy adres www. </div> : "";
 
@@ -1794,10 +1700,10 @@ class UserDesktop extends Component {
                     <input type="range" id="s"
                         onChange={this.rangeHandler} />
                <hr/> 
-                <p/>
+             {/*    <p/>
                     <div class="switcher" onClick={this.screenManage}><i style={{fontSize: "20px" }} class={this.props.fullScreen? "icon-resize-small-alt" : "icon-resize-full-alt"}/>
                     {!this.props.fullScreen? "Aktywuj pełny ekran" : "Zamknij pełny ekran"}</div>
-                  <hr/> 
+                  <hr/>  */}
                 </div>
             </div>
 
@@ -1836,7 +1742,7 @@ const mapStateToProps = state => {
       jwtToken: state.auth.jwttoken,
       addingIcon: state.auth.addingIcon,
       removedId: state.auth.removingIconId,
-      fullScreen: state.auth.fullScreen,
+      //fullScreen: state.auth.fullScreen,
   };
 };
 
@@ -1845,7 +1751,7 @@ const mapDispatchToProps = dispatch => {
         serverAlert: (message) => dispatch(showServerPopup(message)),
         stopAdding: () => dispatch(stopAddingIcon()),
         stopRemoving: () => dispatch(stopRemovingIcon()),
-        screenManage: () => dispatch(manageScreen()),
+        
     };
 };
 //export default UserDesktop;

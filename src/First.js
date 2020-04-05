@@ -12,12 +12,13 @@ class First extends Component {
         topFirst: '115px',
         topGlass: '565px',
         fullScreen: false,
+        responsive: false
     }
 
 
     animated = () => {
         setTimeout(() => {
-            console.log('Our data is fetched');
+         
             this.setState({
                 topFirst: '315px', topGlass: '365px'
             })
@@ -32,12 +33,21 @@ class First extends Component {
     componentDidMount() {
 
         this.animated();
-
+        //window.addEventListener('resize', this.liveResponsive);
     }
 
+    //liveResponsive = () => {
+        //this.Alert(window.innerWidth + "");
+       // if(window.innerWidth < 760) {
+            // this.setState({responsive: true});
+       // }
+       // else {
+        // this.setState({responsive: false});
+       // }
+    // }
 
     render() {
-   
+
 
         return (
             <div>

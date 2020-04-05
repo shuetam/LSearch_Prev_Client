@@ -11,19 +11,22 @@ import YTArea from '../Areas/YTArea';
 import YTAreaAdmin from '../Admin/YTAreaAdmin';
 import BestSellers from '../Areas/BestSellers';
 import Field from '../Fields/Field';
-import Policy from '../Policy/Policy';
+import Policy from '../Informations/Policy';
+import Contact from '../Informations/Contact';
+import Information from '../Informations/Information';
 import Popup from '../Popup/Popup';
 import ServerPopup from '../Popup/ServerPopup';
 import First from '../../First';
 import GoogleLogin from 'react-google-login';
 import GoogleLogout from 'react-google-login';
-import {authLogin, authLogout, showServerPopup} from '../../Store/Actions/auth';
+import {authLogin, authLogout, showServerPopup, escManage, manageScreen} from '../../Store/Actions/auth';
 import FacebookLogin from 'react-facebook-login';
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
 //import {scrollU, scrollD} from '../../Store/Actions/scroll';
 import UserDesktop from '../Areas/UserDesktop';
 import axios from 'axios';
-import {URL, PATHES} from '../../environment'
+import {URL, PATHES} from '../../environment';
+
 
 
 
@@ -41,8 +44,10 @@ class Header extends Component {
             takeMovieDataFrom: URL.api + URL.tvMovies,
             opacity: 0.4,
             takeAllErrors: false,
-
-
+            showCookie: true,
+            cookieLeft: "-450px",
+            showInfoArrow: true,
+            isFullScreen: false
         }
     }
 
@@ -50,6 +55,31 @@ class Header extends Component {
        // console.log("PARAMS");
        // console.log(this.props);
         //debugger;
+
+  /*      */
+        //document.addEventListener("keydown", this.escFunction, false);
+        this.manageFullScreenState();
+        document.addEventListener('fullscreenchange', this.manageFullScreenState, false);
+        document.addEventListener('mozfullscreenchange', this.manageFullScreenState, false);
+        document.addEventListener('webkitfullscreenchange', this.manageFullScreenState, false);
+        document.addEventListener('msfullscreenchange', this.manageFullScreenState, false);
+
+    
+        var cookieAkcept = localStorage.getItem("cookieAkcept");
+
+        var disableArrows = localStorage.getItem("disableArrows");
+
+        if(disableArrows == 1){
+            this.setState({showInfoArrow: false});
+        }
+
+        if(cookieAkcept == 1){
+            this.setState({showCookie: false});
+        }
+        else {
+            this.setState({showCookie: true});
+            this.animatedCookie();
+        }
     
         if(!this.props.isAuthenticated) {
 
@@ -58,11 +88,28 @@ class Header extends Component {
                 document.getElementsByClassName("loginBtn loginBtn--facebook")[i].innerHTML = "Zaloguj przez Facebook";
             }
         }
+        this.liveResponsive();
+        //window.addEventListener('resize', this.liveResponsive);
+// EVENT LISNER ONLY IN FIRST COMPONENT!!!
+        
     }
+
+    componentWillUnmount() {
+        this.manageFullScreenState();
+        //document.removeEventListener("keydown", this.escFunction, false);
+        document.addEventListener('fullscreenchange', this.manageFullScreenState, false);
+        document.addEventListener('mozfullscreenchange', this.manageFullScreenState, false);
+        document.addEventListener('webkitfullscreenchange', this.manageFullScreenState, false);
+        document.addEventListener('msfullscreenchange', this.manageFullScreenState, false);
+
+      }
+
+
 
 
     componentDidUpdate() {
         //debugger;
+
         if(!this.props.isAuthenticated) {
             var facebooks = document.getElementsByClassName("loginBtn loginBtn--facebook");
             for(var i=0;i<facebooks.length;i++) {
@@ -77,9 +124,55 @@ class Header extends Component {
     }
 
     myDesktop = () => {
-        this.props.history.push('/profil/pulpit');
+        this.props.history.push(PATHES.userPulpit);
     }
 
+    hideArrows = () => {
+        this.setState({showInfoArrow: false});
+        localStorage.setItem("disableArrows", 1);
+    }
+
+    acceptCookies = () => {
+        this.setState({showCookie: false});
+        localStorage.setItem("cookieAkcept", 1);
+    }
+
+    animatedCookie = () => {
+        setTimeout(() => {
+         
+            this.setState({
+                cookieLeft: '50px'
+            })
+        }, 1000)
+    }
+
+    manageFullScreenState = () => {
+
+        //this.Alert("I detect screen change");
+       
+            if((window.fullScreen) ||
+            (window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
+                this.setState({isFullScreen: true});
+            }
+            else {
+                this.setState({isFullScreen: false});
+            }
+    }
+
+    screenManage = () => {
+        this.props.screenManage();
+    }
+
+
+    liveResponsive = () => {
+       //this.Alert(window.innerWidth + "");
+       if(window.innerWidth < 760) {
+            this.setState({responsive: true});
+       }
+       else {
+        this.setState({responsive: false});
+       }
+    }
 
     socialLogin = (name, email, image, token) => {
     const data = {
@@ -111,7 +204,9 @@ class Header extends Component {
     responseGoogle = (response) => {
         debugger;
         if(!this.props.isAuthenticated) {
+        
             this.socialLogin(response.profileObj.name, response.profileObj.email, response.profileObj.imageUrl, "G_"+response.tokenId);
+         
             //this.props.SocialLog( response.profileObj.givenName, response.profileObj.imageUrl, response.tokenId);
         }
         //console.log(response);
@@ -121,8 +216,10 @@ class Header extends Component {
        //console.log(response);
        debugger;
        if(!this.props.isAuthenticated) {
+      
            this.socialLogin(response.name, response.email, response.picture.data.url, "F_"+response.accessToken);
-           //this.props.SocialLog( response.name, response.picture.data.url, response.accessToken );    
+         
+           //this.props.SocialLog( response.name, response.picture.data.url, response.accessToken ); 
         }
     }
 
@@ -149,7 +246,7 @@ class Header extends Component {
                 stateCount = stateCount + 1;
                 if (stateCount === 3) {
 
-                    for (var i = 1; i < 7; i++) {
+                    for (var i = 1; i < 8; i++) {
                         if (document.getElementById(i).checked === false) {
 
                             document.getElementById(i).disabled = true;
@@ -169,11 +266,12 @@ class Header extends Component {
             }
         }
 
-        fetchData = URL.api + URL.radioSongs + fetchFrom;
+         fetchData = URL.api + URL.radioSongs + fetchFrom;
     
         if (fetchFrom === "") {
-            fetchData = URL.api + URL.randomSongs;
+            fetchData = URL.api + URL.randomSongs; 
         }
+        //this.setState({ takeSongDataFrom: fetchData });
     }
 
 
@@ -209,7 +307,7 @@ class Header extends Component {
         //console.log("Fetch data when clicked:  " + fetchData);
         
         this.setState({ takeAllErrors: false });
-        this.setState({ takeSongDataFrom: fetchData })
+        this.setState({ takeSongDataFrom: fetchData });
         if(this.props.isAdmin)
         {
             var adminBox = document.getElementById("adminBox");
@@ -230,13 +328,13 @@ class Header extends Component {
         }
     };
 
-    fromFooter = (event) => {
+    openLink = (event) => {
         this.props.history.push(event.target.id);
     }
 
 
         showBooks = () => {
-            this.props.history.push('/books');
+            this.props.history.push(PATHES.bestsellers);
         }
 
     showMovies = () => {
@@ -255,7 +353,7 @@ class Header extends Component {
         this.setState({takeMovieDataFrom: moviesUrl});
         
         if(this.props.isAdmin) {
-            this.props.history.push('/moviesadmin');
+            this.props.history.push(PATHES.moviesAdmin);
         }
         else {
             this.props.history.push(PATHES.movies);
@@ -324,26 +422,39 @@ class Header extends Component {
         let userFolder = null;
         let loginPanel = null;
 
+    let infoArrow = this.state.showInfoArrow? <div onMouseOver={this.hideArrows} class="infoArrow"><i class="icon-left-bold" />
+    <span style={{fontSize: "13px"}}>Zapoznaj się z info.</span></div> : "";
+
+let infoArrowBest = this.state.showInfoArrow? <div onMouseOver={this.hideArrows} class="infoArrowBestsellers"><i class="icon-left-bold" />
+<span style={{fontSize: "13px"}}>Zapoznaj się z info.</span></div> : "";
+
     let movies = 
        <Route path={PATHES.movies} exact component={(props)=> (
              <YTArea {...props} fetchData = {this.state.takeMovieDataFrom} />
          )} />;
         
+let first =  <Route path={'/'} exact component={First} />
 
     let songs =  <Route path={PATHES.songs} exact component={(props) => (
             <YTArea {...props} fetchData={this.state.takeSongDataFrom} />
         )} />;
 
-    let books = <Route path={'/books'} exact component={(props) => (
+    let books = <Route path={PATHES.bestsellers} exact component={(props) => (
             <BestSellers {...props} fetchData={URL.api + URL.bestsellers} />
         )} />;
 
-        let policy = <Route path={'/polityka-prywatnosci'} component={(props) => (
+        let policy = <Route path={PATHES.policy} component={(props) => (
             <Policy/> )} />;
+
+            let contact = <Route path={PATHES.contact} component={(props) => (
+                <Contact/> )} />;
+
+                let information = <Route path={PATHES.information} component={(props) => (
+                    <Information/> )} />;
 
     ///////////////////////////////////////////////
     let moviesAdmin = 
-    <Route path={'/moviesadmin'} exact component={(props)=> (
+    <Route path={PATHES.moviesAdmin} exact component={(props)=> (
         <YTAreaAdmin {...props}  takeAllErrors = {this.state.takeAllErrors}  fetchData = {this.state.takeMovieDataFrom} />
     )} />;
 
@@ -352,7 +463,15 @@ class Header extends Component {
     )} />;
     ///////////////////////////////////////////////
 
-
+    let cookieInfo = this.state.showCookie? 
+    <div class="cookieInfo" style={{ left: this.state.cookieLeft }}>
+        Strona Livesearch.pl wykorzystuje pliki cookies.<br/> 
+        Korzystając z serwisu wyrażasz zgodę na ich używanie.<br/>
+        Plikami cookies możesz zarządzać w ustawienia przeglądarki.<br/>
+        Więcej informacji znajdziesz w naszej <span onClick={this.openLink} id={PATHES.policy} style={{fontSize: "11px"}} class="switchHref">Polityce prywatności.</span>
+     <button class="cookieButtton" onClick={this.acceptCookies}>Akceptuje</button>
+                   
+    </div> : "";
 
     let loginButtons = <div> <GoogleLogin
     clientId="565898203972-ai9uh3sbj7iuitggtaaa1en172jvmd9r.apps.googleusercontent.com"
@@ -374,11 +493,11 @@ class Header extends Component {
 
 
         //if(this.props.isAuthenticated) {
-            userDesktop = (<Route path={'/profil/pulpit'} component={(props) => (
+            userDesktop = (<Route path={PATHES.userPulpit} component={(props) => (
                 <UserDesktop {...props} />
             )} />);
 
-            userFolder = (<Route path={'/profil/folder/:fid?'} component={(props) => (
+            userFolder = (<Route path={PATHES.userFolder + ':fid?'} component={(props) => (
                 <UserDesktop {...props} />
             )} />);
         //} 
@@ -396,6 +515,10 @@ let authenticate = (<div class="logIn" id="userP"> Zaloguj się
 </div>
 </div>);
 
+let screenSwitch = <div id="screenS"  class="screenSwitch" onClick={this.screenManage}><i style={{fontSize: "20px" }} class={this.state.isFullScreen? "icon-resize-small-alt" : "icon-resize-full-alt"}/>
+   <div id="screenField"> {this.state.isFullScreen?  "Zamknij pełny ekran" :  "Aktywuj pełny ekran"}       </div>
+</div>
+
 let adminCheck = this.props.isAdmin? <input name="adminB" type="checkbox" id="adminBox" /> : "";
 //let url = 'https://lh5.googleusercontent.com/-fM22zCVGNzY/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rd2KVOJS8-bzXw0bRyHnScQ_eqykA/s96-c/photo.jpg';
 let userPanel = (<div class="logIn" id="userP">
@@ -406,27 +529,32 @@ let userPanel = (<div class="logIn" id="userP">
 <div id="login"> <div class="desktop" onClick={this.myDesktop}>Mój pulpit</div> <div class="desktop" style={{fontSize: 12}}  onClick={this.logOut}>Wyloguj</div> </div>
 </div>);
 
+//let userHeader = (<div class="logIn" style={{position: "relative"}}  id="userP"><div  class="lds-ellipsis"><div></div><div></div><div></div></div></div>);
+
 let userHeader = this.props.isAuthenticated ? userPanel :  authenticate;
 
+let infoForSmall = <div class="menuForSmall"> Wersja strony dla małego okna przegladarki i urządzeń mobilnych jest w przygotowaniu.</div> 
     
 
-        let mainMenu = (<div class="menu"  onMouseEnter={this.facebookTitle}>
+        let mainMenu =  (<div class="menu"> 
             <div id="music" class="switch">
                 <i class="icon-note" />
                 Muzyka
                 <div id="radio">
 
                     <div class="headHeader">Utwory grane w ostatnich 12h w:</div>
-                    <div id="infoLink">&#9432;info
+                    <div  id="infoLink">&#9432;info
                 <div id="info">
                                 Utwory prezentowane są przez ikony - wielkość ikon uzalenione są od
                                 łącznej ilości odtworzeń utworu w wybranych stacjach radiowych.
                                 Początkowe ulokowanie ikon jest losowe - ich poło&#380;enie mo&#380;esz dowolnie
                                 zmieniać. Aby odtworzyć dany utwór kliknij dwukrotnie na jego ikonę.
                                 <p>W jednym czasie mo&#380;esz wizualizować dane z maksymalnie 3 stacji radiowych.</p>
-                                <p>W przypadku braku zaznaczenia jakichkolwiek stacji, system wylosuje i zaprezentuje 60 utworów (po 10 z ka&#380;dego radia) </p>
+                                <p>W przypadku braku zaznaczenia jakichkolwiek stacji, system wylosuje i zaprezentuje 70 utworów (po 10 z ka&#380;dego radia). </p>
                             </div>
                         </div>
+
+                             {infoArrow}
                                   
                     <p> <label id="1a" onClick={this.clickCheckBox}>
                         <input name="rmf_" type="checkbox" id="1" />
@@ -505,7 +633,7 @@ let userHeader = this.props.isAuthenticated ? userPanel :  authenticate;
             <div id="movie" class="switch"> <i class="icon-video-alt" />Film 
  <div id="movieField">
 <div class="headHeader">Zwiastuny produkcji filmowych:</div>
-<div id="infoLink">&#9432;info
+<div   id="infoLink">&#9432;info
                 <div id="info">
                             Zwiastuny filmowe reprezentowane są przez ikony - wielkość ikon uzale&#380;nione są od
                             oceny filmu w serwisie <a href="http://www.filmweb.pl">filmweb.pl</a>.
@@ -513,16 +641,17 @@ let userHeader = this.props.isAuthenticated ? userPanel :  authenticate;
                             zmieniać. Aby odtworzyć dany zwiastun kliknij dwukrotnie na jego ikonę.
                         </div>
                 </div>
+                {infoArrow}
 
 <p/>
 <label id="1m" style={{margin: 'auto'}} class="mainChoice" onClick={this.clickTV} > 
-<input name="tv" type="checkbox" id="tvBox" />                     
+<input name="tv" type="checkbox" id="tvBox" />
 Telewizja
 </label>
 <br/>
         <div style={{marginLeft: "18px", fontSize: '12px'}}>
         Filmy które zostaną wyemitowane 
-        <br/>w najbli&#380;szych 48h <br/>w stacjach telewizji naziemnej.
+        <br/>w najbli&#380;szych 24h <br/>w stacjach telewizji naziemnej.
         </div>
         <p/>
 <label id="2m" style={{margin: 'auto', pointerEvents: "none" }} class="mainChoice"  onClick={this.clickCinema}>
@@ -648,14 +777,14 @@ Telewizja
 Bestsellery
 </label>
 <br/>
-<div id="infoLink">&#9432;info
+<div  id="infoLink">&#9432;info
                 <div id="info">
         Aktualne bestsellery z najpopularniejszych księgarni internetowych.<br/>
         Wielkości ikon reprezentujących okładki, uzalenione są od ilości księgarni 
         <br/> w których dana pozycja występuje na liście bestsellerów.
                         </div>
                 </div> 
-
+                {infoArrowBest}
         <br/>
 <button id="bB" class= "bookButttonEnabled" onClick={this.showBooks}>POKA<span style={{ fontSize: 14 }}>&#380;</span> KSIĄ<span style={{ fontSize: 14 }}>&#380;</span>KI</button>
 <br/>
@@ -668,28 +797,33 @@ Bestsellery
             <div id="events" class="switch">  <i class="icon-calendar-empty" />Wydarzenia
             <div id="eventsField"> <div class="construction"></div> Strona w budowie  </div>
              </div>
-
+            {screenSwitch}
            {userHeader}
         </div>
         )
 
-        return (
+return (
           <div className="container">
               
             <div id="allLive" className="header">
                 <div className="main" onClick={this.Main} >Live<span style={{ color: "rgba(255, 255, 255, 0.5)" }}>S</span>earch</div>
 
                 {mainMenu}
-                {this.opacity}
+                {infoForSmall}
+                {cookieInfo}
+           
                
-                
                 <Switch>
-                    <Route path={'/'} exact component={First} />
-                 
+                    {/* <Route path={'/'} exact component={First} /> */}
+
+                    
+                            {first}
                             {books}
                             {songs}
                             {movies}
                             {policy}
+                            {contact}
+                            {information}
                             {userDesktop}
                             {userFolder}
                             {moviesAdmin}
@@ -709,9 +843,9 @@ Bestsellery
 
             </div>
             <div  className = {this.props.match.params.id? "footer" : "mainFooter"}>
-            <div onClick={this.fromFooter} id="f1" class="switchFooter">Kontakt</div>
-            <div onClick={this.fromFooter} id="/polityka-prywatnosci" class="switchFooter">Polityka prywatności</div>
-            <div onClick={this.fromFooter} id="f3" class="switchFooter">Dodatkowe informacje</div>
+            <div onClick={this.openLink} id={PATHES.contact} class="switchFooter">Kontakt</div>
+            <div onClick={this.openLink} id={PATHES.policy} class="switchFooter">Polityka prywatności</div>
+            <div onClick={this.openLink} id={PATHES.information} class="switchFooter">Dodatkowe informacje</div>
             </div>
            
             </div>
@@ -743,11 +877,11 @@ const mapDispatchToProps = dispatch => {
         SocialLog: (userId, userName, imageUrl, token, userRole) => 
         dispatch(authLogin(userId, userName, imageUrl, token, userRole)),
         //FacebookLog: ( userName, imageUrl, token) => dispatch(authLogin(userName, imageUrl, token)),
-  
+        escManage: () => dispatch(escManage()),
         Logout: () => dispatch(authLogout()),
-        serverAlert: (message) => dispatch(showServerPopup(message))
-
+        serverAlert: (message) => dispatch(showServerPopup(message)),
+        screenManage: () => dispatch(manageScreen()),
     };
 };
 
-  export default connect( mapStateToProps, mapDispatchToProps )(Header);
+  export default connect(mapStateToProps, mapDispatchToProps)(Header);

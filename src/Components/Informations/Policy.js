@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import './Policy.css';
+import './Style.css';
 import { Route, NavLink, Switch, withRouter } from 'react-router-dom';
 
 
@@ -20,13 +20,13 @@ class Policy extends Component {
 
     render() {
  
-        let policy = (<div className="policy">
-        <p style={{color: "rgba(255, 255, 255, 0.719)"}}>Poniższa polityka prywatności portalu livesearch.pl wyjaśnia zasady oraz cele przetwarzania Twoich danych osobowych. 
+        let policy = (<div className="mainContent">
+        <p style={{color: "rgba(255, 255, 255, 0.719)"}}>Poniższa polityka prywatności portalu <span style={{ color: "rgba(231, 173, 64, 0.836)" }}>Live<span style={{ color: "rgba(255, 255, 255, 0.6)" }}>S</span>earch</span>.pl wyjaśnia zasady oraz cele przetwarzania Twoich danych osobowych. 
               <br/>Przedstawia również działanie plików cookies (tzw. "ciasteczek") używanych na stronie.</p>
         <br/>
         <p style={{color: "rgba(255, 255, 255, 0.719)"}}>Administrator danych osobowych:</p>
         Właścicielem serwisu oraz administratorem danych osobowych jest Mateusz Bieda zam. ul. Barska 61a/4 30-307 Kraków. 
-        <br/>Kontakt email: livesearch@gmail.com.
+        <br/>Kontakt email: admin@livesearch.pl.
         <br/>
         <br/>
         <p style={{color: "rgba(255, 255, 255, 0.719)"}}>Jakie dane osobowe przetwarzamy i w jaki sposób się to odbywa?</p>
@@ -43,10 +43,10 @@ class Policy extends Component {
         Google i Facebook nie udostępniają nam żadnych poufnych danych oraz nie dają nam jakichkolwiek uprawnień do edytowania i publikowania treści na Twoim kontach.
         Aby dowiedzieć się więcej o tym jakie dane Facebook i Google udostępniają zewnętrznym aplikacjom zapoznaj się z ich politykami prywatności oraz informacjami dotyczącymi zewnętrznego logowania się:
         <br/>
-        <div onClick={this.goTo} class="switchPolicy"  id="https://www.facebook.com/privacy/explanation">Polityka prywatności - Facebook</div>
-        <div onClick={this.goTo} class="switchPolicy" id="https://policies.google.com/privacy?hl=pl">Polityka prywatności - Google</div>
-        <div onClick={this.goTo} class="switchPolicy" id="https://www.facebook.com/help/223184117694507?helpref=related">Logowanie Facebook</div>
-        <div onClick={this.goTo} class="switchPolicy" id="https://support.google.com/accounts/answer/112802?hl=pl&ref_topic=7188760">Logowanie Google</div>
+        <div onClick={this.goTo} class="switchHref"  id="https://www.facebook.com/privacy/explanation">Polityka prywatności - Facebook</div>
+        <div onClick={this.goTo} class="switchHref" id="https://policies.google.com/privacy?hl=pl">Polityka prywatności - Google</div>
+        <div onClick={this.goTo} class="switchHref" id="https://www.facebook.com/help/223184117694507?helpref=related">Logowanie Facebook</div>
+        <div onClick={this.goTo} class="switchHref" id="https://support.google.com/accounts/answer/112802?hl=pl&ref_topic=7188760">Logowanie Google</div>
         <br/>
         <br/>
         <p style={{color: "rgba(255, 255, 255, 0.719)"}}>Jakie przysługują Ci prawa wobec Twoich danych?</p>
@@ -61,11 +61,11 @@ class Policy extends Component {
         W każdej chwili możesz dostosować lub usunąć mechanizm zapisywania plików cookies w ustawianiach swojej przeglądarki internetowej. Jednocześnie informujemy, że wyłączenie cookies na naszej stronie może spowodować błędne działanie niektórych funkcji.
         Szczegółowe informacje na temat zarządzania plikami cookie, zależnie od przeglądarki dostępne są pod linkami:
         <br/>
-        <div onClick={this.goTo} class="switchPolicy"  id="https://support.google.com/chrome/answer/95647?co=GENIE.Platform%3DDesktop&hl=pl">Cookies w Chrome</div>
-        <div onClick={this.goTo} class="switchPolicy"  id="https://support.mozilla.org/pl/kb/usuwanie-ciasteczek-i-danych-stron-firefox?redirectlocale=pl&redirectslug=usuwanie-ciasteczek">Cookies w Firefox</div>
-        <div onClick={this.goTo} class="switchPolicy"  id="https://support.apple.com/pl-pl/guide/safari/sfri11471/mac">Cookies w Safari</div>
-        <div onClick={this.goTo} class="switchPolicy"  id="https://blogs.opera.com/news/2015/08/how-to-manage-cookies-in-opera/">Cookies w Opera</div>
-        <div onClick={this.goTo} class="switchPolicy"  id="https://support.microsoft.com/pl-pl/help/4027947/microsoft-edge-delete-cookies">Cookies w Edge</div>
+        <div onClick={this.goTo} class="switchHref"  id="https://support.google.com/chrome/answer/95647?co=GENIE.Platform%3DDesktop&hl=pl">Cookies w Chrome</div>
+        <div onClick={this.goTo} class="switchHref"  id="https://support.mozilla.org/pl/kb/usuwanie-ciasteczek-i-danych-stron-firefox?redirectlocale=pl&redirectslug=usuwanie-ciasteczek">Cookies w Firefox</div>
+        <div onClick={this.goTo} class="switchHref"  id="https://support.apple.com/pl-pl/guide/safari/sfri11471/mac">Cookies w Safari</div>
+        <div onClick={this.goTo} class="switchHref"  id="https://blogs.opera.com/news/2015/08/how-to-manage-cookies-in-opera/">Cookies w Opera</div>
+        <div onClick={this.goTo} class="switchHref"  id="https://support.microsoft.com/pl-pl/help/4027947/microsoft-edge-delete-cookies">Cookies w Edge</div>
         <br/>
         <br/>
         <br/>

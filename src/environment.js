@@ -5,6 +5,8 @@ export const URL = {
     api: "http://localhost:53072/api/", 
     //api: "http://localhost:5000/api/", 
 
+    //api: "https://www.livesearch.pl/api/", 
+
     login: "SocialUser/user",
     radioSongs: "song/allradiosongs/",
     randomSongs: "song/radiorandom",
@@ -35,8 +37,13 @@ export const PATHES = {
     songs: '/muzyka_radio',
     songsAdmin: '/songsadmin',
     movies: '/filmy_tv',
-    moviesAdmin: '/moviesadmin'
-
+    moviesAdmin: '/moviesadmin',
+    userPulpit: '/profil/pulpit',
+    bestsellers: '/literatura_bestsellery',
+    policy: '/polityka-prywatnosci',
+    contact: '/kontakt',
+    information: '/informacje',
+    userFolder: '/profil/folder/'
 }
 
 

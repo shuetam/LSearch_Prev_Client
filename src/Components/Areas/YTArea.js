@@ -103,9 +103,8 @@ class YTArea extends Component {
            // debugger;
             this.setState({ userIconsId: result.data })});
         //.catch(error => {this.Alert()}); 
+        }
     }
-}
-
 
 /*      sccrollUp = () => {
         //debugger;
@@ -129,7 +128,15 @@ class YTArea extends Component {
            // this.setState({ mainTitle: this.state.songs[this.state.songs.length - 1].title })
 
             var note = document.getElementById(this.state.icons[this.state.icons.length - 1].id)
-            this.setState({ nowPlayed: note.id });
+
+            if(note.id.includes("Error")) {
+                this.nextSongHandler();
+            }
+            else {
+                this.setState({ nowPlayed: note.id });
+                this.setState({ ytID: note.id });
+            }
+
             note.style.boxShadow = this.state.playedShadow;
 
             setTimeout(() => {
@@ -182,8 +189,13 @@ class YTArea extends Component {
     nextSongHandler = () => {
 
         var randomInt = require('random-int');
+        var index = randomInt(this.state.icons.length - 1);
+        var vidID = this.state.icons[index].id;
 
-        var vidID = this.state.icons[randomInt(this.state.icons.length - 1)].id;
+        if(vidID.includes("Error") && index !== 0 ) {
+            this.nextSongHandler();
+        }
+        else {
         this.setState({ ytID: vidID });
         var note = document.getElementById(vidID);
 
@@ -197,6 +209,7 @@ class YTArea extends Component {
               }))
         }
         this.setState({ nowPlayed: note.id });
+    }
     }
 
 
@@ -224,7 +237,7 @@ class YTArea extends Component {
 
     onHover = (event) => {
 
-        console.log( localStorage.getItem('inMove'));
+       // console.log( localStorage.getItem('inMove'));
 
         var entity = document.getElementById(event.target.id);
 
@@ -293,13 +306,13 @@ class YTArea extends Component {
                 pos4 = e.clientY;
                 elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
                 elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                localStorage.setItem('inMove', true);
+               // localStorage.setItem('inMove', true);
             }
 
             function closeDragElement() {
                 //debugger;
                 //const inMove = localStorage.removeItem('inMove');
-                localStorage.setItem('inMove', false);
+               // localStorage.setItem('inMove', false);
                 document.onmouseup = null;
                 document.onmousemove = null;
             }
@@ -382,9 +395,7 @@ class YTArea extends Component {
          }
     }
 
-    screenManage = () => {
-        this.props.manageScreen();
-    }
+ 
 
     render(props) {
         var randomInt = require('random-int');
@@ -407,7 +418,7 @@ let field = "";
                     classname="entity"
                     size={this.setSize(parseInt(song.count)) }
                     location={ this.state.loaded? 
-                      {boxShadow: this.getShadow(parseInt(song.left),parseInt(song.top), song.id), top: song.top, left: song.left, transition: 'top '+2+'s, left '+2+'s', opacity: '0.5'}:
+                      {boxShadow: this.getShadow(parseInt(song.left),parseInt(song.top), song.id), top: song.top, left: song.left, transition: 'top '+2+'s, left '+2+'s'}:
                       {top: randomInt(101,200)+'vh', left: randomInt(-50,200)+'vw'}}
                     onHover={this.onHover}
                     onLeave={this.cleanTitle}
@@ -432,10 +443,10 @@ let field = "";
                     <input type="range" id="s"
                         onChange={this.rangeHandler} />
                <hr/> 
-                <p/>
-                    <div class="switchScreen" onClick={this.screenManage}><i style={{fontSize: "20px" }} class={this.props.fullScreen? "icon-resize-small-alt" : "icon-resize-full-alt"}/>
-                    {!this.props.fullScreen? "Aktywuj pełny ekran" : "Zamknij pełny ekran"}</div>
-                  <hr/> 
+               {/*  <p/>
+                    <div class="switchScreen" onClick={this.screenManage}><i style={{fontSize: "20px" }} class={this.isFullScreen()? "icon-resize-small-alt" : "icon-resize-full-alt"}/>
+                    {!this.isFullScreen()? "Aktywuj pełny ekran" : "Zamknij pełny ekran"}</div>
+                  <hr/>  */}
                 </div>
             </div>
                  
@@ -462,7 +473,7 @@ const mapDispatchToProps = dispatch => {
     return {
 
         serverAlert: (message) => dispatch(showServerPopup(message)),
-        manageScreen: () => dispatch(manageScreen())
+       
 
     };
 };
@@ -473,7 +484,7 @@ const mapStateToProps = state => {
         isAuthenticated: state.auth.jwttoken !== null,
         //userId: state.auth.userId,
         jwtToken: state.auth.jwttoken,
-        fullScreen: state.auth.fullScreen
+        //fullScreen: state.auth.fullScreen
     };
 };
 

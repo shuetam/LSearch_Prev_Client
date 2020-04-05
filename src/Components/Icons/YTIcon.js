@@ -135,7 +135,7 @@ class YTIcon extends Component {
         if(event.target.className == "addEntity")
         {
             var url = URL.api+URL.addIcon;
-            console.log("DKASHKDJHASKJDSA - " + url);
+            //console.log("DKASHKDJHASKJDSA - " + url);
             axios.post(URL.api+URL.addIcon, data, this.state.authConfig)
             .then((response) => {
                 debugger;

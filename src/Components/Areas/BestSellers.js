@@ -147,7 +147,7 @@ class BestSellers extends Component {
 
     onHover = (event) => {
 
-        console.log( localStorage.getItem('inMove'));
+       
 
         var entity = document.getElementById(event.target.id);
 
@@ -209,7 +209,7 @@ class BestSellers extends Component {
             function closeDragElement() {
                 //debugger;
                 //const inMove = localStorage.removeItem('inMove');
-                localStorage.setItem('inMove', false);
+               // localStorage.setItem('inMove', false);
                 document.onmouseup = null;
                 document.onmousemove = null;
             }
@@ -258,11 +258,7 @@ class BestSellers extends Component {
         }
     }
 
-    screenManage = () => {
-        this.props.screenManage();
-    }
-
-
+   
     getHPosition = () => {
         var randomInt = require('random-int');
         return randomInt(101,200);
@@ -406,10 +402,10 @@ class BestSellers extends Component {
                     <input type="range" id="s"
                         onChange={this.rangeHandler} />
                <hr/> 
-                <p/>
+                {/* <p/>
                     <div class="switchScreen" onClick={this.screenManage}><i style={{fontSize: "20px" }} class={this.props.fullScreen? "icon-resize-small-alt" : "icon-resize-full-alt"}/>
                     {!this.props.fullScreen? "Aktywuj pełny ekran" : "Zamknij pełny ekran"}</div>
-                  <hr/> 
+                  <hr/>  */}
                 </div>
             </div>
 
@@ -436,8 +432,6 @@ const mapDispatchToProps = dispatch => {
     return {
 
         serverAlert: (message) => dispatch(showServerPopup(message)),
-        screenManage: () => dispatch(manageScreen()),
-
     };
 };
 
@@ -446,7 +440,7 @@ const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.userId !== null,
         userId: state.auth.userId,
-        fullScreen: state.auth.fullScreen,
+        //fullScreen: state.auth.fullScreen,
     };
 };
 

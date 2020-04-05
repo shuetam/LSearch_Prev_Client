@@ -17,12 +17,12 @@ import ServerPopup from './Components/Popup/ServerPopup';
 class App extends Component {
 
     componentWillMount () {
+
+        document.title = "LiveSearch";
         this.props.onTryAutoSignup();
-  
-      }
-
-
-      
+    }
+       
+ 
     render() {
        
         return (

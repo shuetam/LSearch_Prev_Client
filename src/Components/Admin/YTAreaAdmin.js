@@ -268,7 +268,7 @@ debugger;
 
     onHover = (event) => {
 
-        console.log( localStorage.getItem('inMove'));
+        //console.log( localStorage.getItem('inMove'));
 
         var entity = document.getElementById(event.target.id);
 
@@ -335,13 +335,13 @@ debugger;
                 pos4 = e.clientY;
                 elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
                 elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                localStorage.setItem('inMove', true);
+                //localStorage.setItem('inMove', true);
             }
 
             function closeDragElement() {
                 //debugger;
                 //const inMove = localStorage.removeItem('inMove');
-                localStorage.setItem('inMove', false);
+                //localStorage.setItem('inMove', false);
                 document.onmouseup = null;
                 document.onmousemove = null;
             }

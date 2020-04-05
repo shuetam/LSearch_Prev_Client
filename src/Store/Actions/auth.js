@@ -8,6 +8,14 @@ export const manageScreen = () => {
     };
     };
 
+    export const escManage = () => {
+        return {
+            type: 'ESC_MANAGE',
+            
+        };
+        };
+    
+
 
 export const removingIcon = (id) => {
     return {
